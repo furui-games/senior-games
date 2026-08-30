@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>福睿數字順順點</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=w5LuR6cRocWJQ3BLy2Ov24rrac-g3v_O32vXCUpM8WbKujHCiVR6NvM7dRqlDuNXBNval5_oQXn6Iibpnx8Hj0vHpj_PdhfCl7lho5S1ryZM-0CpYs4xOuV8b89nQ_Pqd3e9-m6r7ZUZXR5awRyUpjeVT7exLoGVUx6Q4uzfQwlaqU17G91ynV1MIF25Vp8J_zuly4W3HVIk0RG3FO-DPRxboyZFRFFYxVp47V3QGvViNhBvy__NkhK50kQNqX9DDKPmN00NLPvwqvz1knDRQ2aVem0mp6ymGI0ajt35CiqX3hyXN7D2OjviIPnQqSDZgHcQ1CbQpNb-Tnzd3puYb6PEQPV5_6O2sbrE9907G6Mt6XQKN87CDNjM7VQinS2PMcvUgJHV3vUGYK80E5A75A" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMDc0ODg4MWY4YjJjNTlkYmZlZDAzMDMwYyZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTYlOTUlQjglRTUlQUQlOTclRTklQTAlODYlRTklQTAlODYlRTklQkIlOUVfdjEuaHRtbCZjZD1hdHRhY2htZW50JnRzPTQ5NjY4NyZwPWZzJmNpZD0xJnNpZz1jYTNkOWNjZDE0MTA0YTEwZWNhZWYxMzUwMmIxNDg5ZGRlMjhmZDRkODM2NmNiOTY5MWU4MmM3NWNjNzRjNTcwJnY9MA"/><style>
+  :root{
+    --bg:#fff7eb;
+    --panel:#ffffff;
+    --ink:#3c332b;
+    --muted:#7a6f66;
+    --accent:#e99048;
+    --accent-dark:#c96d2a;
+    --green:#dff3df;
+    --green-ink:#2f7540;
+    --red:#d94b4b;
+    --red-soft:#ffe7e7;
+    --line:#ead7c5;
+    --shadow:0 10px 28px rgba(91,62,35,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:linear-gradient(180deg,#fffaf1 0%,#fff2df 100%);color:var(--ink)}
+  body{min-height:100vh}
+  button,input,select{font:inherit}
+  button{touch-action:manipulation}
+  .app{width:min(960px,100%);margin:0 auto;padding:16px 14px 28px}
+  .header{text-align:center;margin-bottom:12px}
+  h1{font-size:clamp(30px,7vw,48px);margin:4px 0 2px;color:#8d4f22;letter-spacing:.03em}
+  .subtitle{font-size:clamp(16px,4vw,22px);color:var(--muted);font-weight:700}
+  .card{background:var(--panel);border:1px solid #f0dfd0;border-radius:22px;box-shadow:var(--shadow)}
+  .setup{padding:18px;display:grid;gap:16px}
+  .row{display:grid;gap:8px}
+  .label{font-weight:800;font-size:18px}
+  input[type="text"]{width:100%;border:2px solid var(--line);border-radius:14px;padding:13px 14px;font-size:20px;background:#fff}
+  input[type="text"]:focus{outline:3px solid rgba(233,144,72,.22);border-color:var(--accent)}
+  .difficulty{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .diff-btn,.sound-btn,.start-btn,.secondary-btn,.danger-btn{
+    border:0;border-radius:14px;font-weight:900;cursor:pointer
+  }
+  .diff-btn{padding:12px 5px;background:#f6eadf;color:#6d4b31;font-size:17px;border:2px solid transparent}
+  .diff-btn.active{background:#ffe1c2;border-color:var(--accent);color:#7d3e10}
+  .setup-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sound-btn{padding:13px;background:#f4efe9;color:#5d5047}
+  .start-btn{padding:14px;background:var(--accent);color:#fff;font-size:22px;box-shadow:0 6px 0 var(--accent-dark)}
+  .start-btn:active{transform:translateY(3px);box-shadow:0 3px 0 var(--accent-dark)}
+  .tips{font-size:16px;line-height:1.6;background:#fff9f1;border-radius:14px;padding:10px 12px;color:#6f6257}
+  .game-wrap{display:none}
+  .game-wrap.active{display:block}
+  .game-shell{min-height:calc(100vh - 32px);display:flex;flex-direction:column;justify-content:center}
+  .hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+  .stat{background:#fff;border:1px solid #f0dfd0;border-radius:16px;padding:9px 6px;text-align:center;box-shadow:0 5px 16px rgba(91,62,35,.07)}
+  .stat b{display:block;font-size:clamp(21px,5vw,30px);color:#8d4f22}
+  .stat span{font-size:14px;color:var(--muted);font-weight:800}
+  .next-box{text-align:center;background:#fff1cf;border:2px solid #f3bc65;border-radius:18px;padding:8px 10px;margin:0 auto 10px;width:min(460px,100%);min-height:72px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .next-box .small{font-weight:900;font-size:clamp(20px,5vw,28px);color:#7f531c}
+  #nextNumber{font-size:clamp(42px,10vw,70px);font-weight:1000;line-height:1;color:#b35319}
+  .combo-line{height:30px;text-align:center;font-weight:900;font-size:18px;color:#8d4f22;overflow:hidden}
+  .board-frame{width:min(620px,100%);margin:0 auto;border:4px solid transparent;border-radius:22px;padding:8px;transition:border-color .15s}
+  .board-frame.warning{border-color:var(--red);animation:warnPulse .8s ease-in-out infinite}
+  @keyframes warnPulse{50%{box-shadow:0 0 0 5px rgba(217,75,75,.14)}}
+  .board{display:grid;gap:clamp(6px,1.7vw,12px);width:100%;margin:0 auto}
+  .num-btn{
+    aspect-ratio:1/1;border:2px solid #d7c3b0;border-radius:16px;background:#fffdf9;color:#2f2a25;
+    font-size:clamp(28px,8vw,54px);font-weight:1000;cursor:pointer;box-shadow:0 5px 0 #dcc7b3;
+    min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;user-select:none;
+    transition:transform .08s, background .12s, border-color .12s, color .12s, box-shadow .12s
+  }
+  .num-btn:active{transform:translateY(2px)}
+  .num-btn.done{background:var(--green);border-color:#98cf9d;color:var(--green-ink);box-shadow:0 4px 0 #a6d3aa}
+  .num-btn.wrong{border-color:var(--red);box-shadow:0 0 0 4px rgba(217,75,75,.2),0 5px 0 #efb7b7;background:var(--red-soft)}
+  .num-btn:disabled{cursor:default}
+  .status-msg{height:34px;text-align:center;font-weight:1000;font-size:21px;color:#7d4b1c;margin-top:5px;overflow:hidden}
+  .time-danger{color:var(--red)!important}
+  .countdown{
+    position:fixed;inset:0;background:rgba(255,247,235,.94);display:none;align-items:center;justify-content:center;z-index:20;
+    font-size:min(35vw,180px);font-weight:1000;color:#b65b1c
+  }
+  .countdown.show{display:flex}
+  .leaderboard{margin-top:16px;padding:16px}
+  .section-title{font-size:23px;font-weight:1000;color:#7d4b1c;margin-bottom:10px}
+  .table-wrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:620px}
+  th,td{padding:9px 8px;border-bottom:1px solid #eee2d8;text-align:center;font-size:15px}
+  th{background:#fff4e6;color:#6d4931}
+  .danger-btn{padding:10px 14px;background:#f8e2e2;color:#a13b3b;margin-top:10px}
+  .finish-overlay{position:fixed;inset:0;background:rgba(61,42,28,.42);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+  .finish-overlay.show{display:flex}
+  .finish-card{width:min(520px,100%);padding:22px;background:#fff;border-radius:24px;text-align:center;box-shadow:0 22px 60px rgba(0,0,0,.22);position:relative;z-index:31}
+  .finish-card h2{font-size:36px;margin:0 0 14px;color:#9a501a}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 18px}
+  .result-item{background:#fff4e6;border-radius:15px;padding:12px}
+  .result-item b{display:block;font-size:30px;color:#8a471b}
+  .result-item span{font-weight:800;color:#77665a}
+  .finish-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .secondary-btn{padding:13px;background:#efe7df;color:#5b4d42;font-size:18px}
+  .finish-actions .start-btn{font-size:18px}
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:29;display:none}
+  .confetti-layer.show{display:block}
+  .confetti{position:absolute;bottom:-20px;width:10px;height:18px;border-radius:2px;animation:rise linear forwards}
+  @keyframes rise{
+    from{transform:translateY(0) rotate(0deg);opacity:1}
+    to{transform:translateY(-115vh) rotate(720deg);opacity:.25}
+  }
+  .hidden{display:none!important}
+  @media(max-width:520px){
+    .app{padding:10px 8px 18px}
+    .setup{padding:14px}
+    .difficulty{gap:5px}
+    .diff-btn{font-size:15px;padding:11px 2px}
+    .game-shell{min-height:calc(100vh - 18px)}
+    .hud{gap:5px}
+    .stat{padding:7px 3px}
+    .stat span{font-size:12px}
+    .board-frame{padding:5px;border-radius:16px}
+    .board{gap:5px}
+    .num-btn{border-radius:11px;font-size:clamp(25px,9vw,44px);box-shadow:0 3px 0 #dcc7b3}
+    .next-box{min-height:62px;margin-bottom:6px}
+    .combo-line{height:25px;font-size:16px}
+    .status-msg{height:29px;font-size:18px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <section id="homeScreen">
+    <div class="header">
+      <h1>福睿數字順順點</h1>
+      <div class="subtitle">樂齡視覺搜尋 × 專注力挑戰</div>
+    </div>
+
+    <div class="card setup">
+      <div class="row">
+        <div class="label">姓名</div>
+        <input id="playerName" type="text" maxlength="12" placeholder="請輸入姓名" />
+      </div>
+
+      <div class="row">
+        <div class="label">難度</div>
+        <div class="difficulty">
+          <button class="diff-btn active" data-diff="easy">易<br><small>2×3</small></button>
+          <button class="diff-btn" data-diff="medium">中<br><small>3×3</small></button>
+          <button class="diff-btn" data-diff="hard">難<br><small>4×4</small></button>
+          <button class="diff-btn" data-diff="expert">終級<br><small>5×5</small></button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button id="soundToggle" class="sound-btn">🔊 音效：開</button>
+        <button id="startBtn" class="start-btn">開始遊戲</button>
+      </div>
+
+      <div class="tips">
+        按照數字順序依序點擊，例如 1 → 2 → 3。<br>
+        點對 +2 分，完成一盤再 +10 分；點錯不扣分。
+      </div>
+    </div>
+
+    <div class="card leaderboard">
+      <div class="section-title">🏆 本機排行榜</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>完成盤數</th><th>正確數</th></tr></thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+      <button id="clearBoardBtn" class="danger-btn">清除排行榜紀錄</button>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="game-wrap">
+    <div class="game-shell">
+      <div class="hud">
+        <div class="stat"><b id="score">0</b><span>分數</span></div>
+        <div class="stat"><b id="time">60</b><span>剩餘時間</span></div>
+        <div class="stat"><b id="boards">0</b><span>完成盤數</span></div>
+      </div>
+
+      <div class="next-box">
+        <span class="small">下一個：</span>
+        <span id="nextNumber">1</span>
+      </div>
+
+      <div id="comboLine" class="combo-line"></div>
+
+      <div id="boardFrame" class="board-frame">
+        <div id="board" class="board"></div>
+      </div>
+
+      <div id="statusMsg" class="status-msg"></div>
+    </div>
+  </section>
+</div>
+
+<div id="countdown" class="countdown"></div>
+
+<div id="finishOverlay" class="finish-overlay">
+  <div class="finish-card">
+    <h2>🎉 本局完成！</h2>
+    <div class="result-grid">
+      <div class="result-item"><b id="finalScore">0</b><span>總分</span></div>
+      <div class="result-item"><b id="finalBoards">0</b><span>完成盤數</span></div>
+      <div class="result-item"><b id="finalCorrect">0</b><span>正確點擊數</span></div>
+      <div class="result-item"><b id="finalCombo">0</b><span>最高連擊</span></div>
+    </div>
+    <div class="finish-actions">
+      <button id="backBtn" class="secondary-btn">回設定</button>
+      <button id="replayBtn" class="start-btn">再玩一次</button>
+    </div>
+  </div>
+</div>
+<div id="confettiLayer" class="confetti-layer"></div>
+
+<script>
+(() => {
+  const DIFFS = {
+    easy:   {label:'易', cols:3, rows:2, count:6},
+    medium: {label:'中', cols:3, rows:3, count:9},
+    hard:   {label:'難', cols:4, rows:4, count:16},
+    expert: {label:'終級', cols:5, rows:5, count:25}
+  };
+
+  let difficulty = 'easy';
+  let soundOn = true;
+  let score = 0;
+  let timeLeft = 60;
+  let completedBoards = 0;
+  let correctClicks = 0;
+  let combo = 0;
+  let maxCombo = 0;
+  let target = 1;
+  let timer = null;
+  let playing = false;
+  let locked = false;
+  let audioCtx = null;
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const homeScreen = $('#homeScreen');
+  const gameScreen = $('#gameScreen');
+  const board = $('#board');
+  const boardFrame = $('#boardFrame');
+  const countdown = $('#countdown');
+  const statusMsg = $('#statusMsg');
+  const comboLine = $('#comboLine');
+
+  function ensureAudio(){
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(AC) audioCtx = new AC();
+    }
+    if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function tone(freq=440, dur=.08, type='sine', vol=.12, delay=0){
+    if(!soundOn) return;
+    ensureAudio();
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime + delay;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq,t);
+    gain.gain.setValueAtTime(0.0001,t);
+    gain.gain.exponentialRampToValueAtTime(vol,t+.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(t); osc.stop(t+dur+.03);
+  }
+
+  function soundCorrect(){ tone(620,.07,'sine',.09); tone(820,.09,'sine',.08,.055); }
+  function soundWrong(){ tone(190,.13,'square',.07); tone(150,.14,'square',.06,.08); }
+  function soundComplete(){ tone(523,.09,'sine',.1); tone(659,.09,'sine',.1,.08); tone(784,.14,'sine',.11,.16); }
+  function soundCount(n){
+    if(n <= 3) tone(n===1?880:650,.16,'sine',.12);
+    else tone(520,.09,'sine',.07);
+  }
+  function soundCheer(){
+    [523,659,784,1047].forEach((f,i)=>tone(f,.18,'sine',.11,i*.09));
+    [880,990,1175].forEach((f,i)=>tone(f,.13,'triangle',.07,.42+i*.07));
+  }
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function setDifficulty(diff){
+    difficulty = diff;
+    $$('.diff-btn').forEach(b=>b.classList.toggle('active', b.dataset.diff===diff));
+  }
+
+  $$('.diff-btn').forEach(b=>b.addEventListener('click',()=>setDifficulty(b.dataset.diff)));
+
+  $('#soundToggle').addEventListener('click',()=>{
+    soundOn = !soundOn;
+    $('#soundToggle').textContent = soundOn ? '🔊 音效：開' : '🔇 音效：關';
+    if(soundOn){ ensureAudio(); tone(660,.07,'sine',.08); }
+  });
+
+  function updateHUD(){
+    $('#score').textContent = score;
+    $('#time').textContent = timeLeft;
+    $('#boards').textContent = completedBoards;
+    $('#nextNumber').textContent = target;
+    $('#time').classList.toggle('time-danger', timeLeft <= 10);
+    boardFrame.classList.toggle('warning', timeLeft <= 10 && playing);
+  }
+
+  function renderBoard(){
+    const d=DIFFS[difficulty];
+    const nums=shuffle(Array.from({length:d.count},(_,i)=>i+1));
+    board.innerHTML='';
+    board.style.gridTemplateColumns=`repeat(${d.cols}, minmax(0,1fr))`;
+    nums.forEach(n=>{
+      const btn=document.createElement('button');
+      btn.className='num-btn';
+      btn.type='button';
+      btn.textContent=n;
+      btn.dataset.num=n;
+      btn.setAttribute('aria-label',`數字 ${n}`);
+      btn.addEventListener('click',()=>handleNumber(btn,n));
+      board.appendChild(btn);
+    });
+    target=1;
+    updateHUD();
+  }
+
+  function handleNumber(btn,n){
+    if(!playing || locked) return;
+    if(n===target && !btn.classList.contains('done')){
+      score += 2;
+      correctClicks++;
+      combo++;
+      maxCombo=Math.max(maxCombo,combo);
+      btn.classList.add('done');
+      btn.innerHTML = `${n}<span style="font-size:.45em;margin-left:.08em">✓</span>`;
+      soundCorrect();
+
+      if(combo % 5 === 0){
+        comboLine.textContent = `👍 連續答對 ${combo} 次！`;
+        setTimeout(()=>{ if(playing) comboLine.textContent=''; },700);
+      }
+
+      if(target === DIFFS[difficulty].count){
+        score += 10;
+        completedBoards++;
+        statusMsg.textContent='🎉 完成一盤！＋10';
+        soundComplete();
+        locked=true;
+        updateHUD();
+        setTimeout(()=>{
+          if(playing){
+            statusMsg.textContent='';
+            locked=false;
+            renderBoard();
+          }
+        },500);
+      }else{
+        target++;
+        updateHUD();
+      }
+    }else{
+      combo=0;
+      comboLine.textContent='';
+      soundWrong();
+      btn.classList.add('wrong');
+      setTimeout(()=>btn.classList.remove('wrong'),280);
+    }
+  }
+
+  function resetGame(){
+    clearInterval(timer);
+    score=0; timeLeft=60; completedBoards=0; correctClicks=0; combo=0; maxCombo=0; target=1;
+    playing=false; locked=true;
+    statusMsg.textContent='';
+    comboLine.textContent='';
+    boardFrame.classList.remove('warning');
+    $('#time').classList.remove('time-danger');
+    updateHUD();
+    renderBoard();
+  }
+
+  async function startSequence(){
+    ensureAudio();
+    resetGame();
+    homeScreen.classList.add('hidden');
+    gameScreen.classList.add('active');
+    window.scrollTo({top:0,behavior:'auto'});
+    countdown.classList.add('show');
+    for(const n of [3,2,1]){
+      countdown.textContent=n;
+      soundCount(n);
+      await new Promise(r=>setTimeout(r,700));
+    }
+    countdown.textContent='開始！';
+    tone(980,.16,'sine',.13);
+    await new Promise(r=>setTimeout(r,350));
+    countdown.classList.remove('show');
+    locked=false;
+    playing=true;
+    updateHUD();
+
+    timer=setInterval(()=>{
+      timeLeft--;
+      if(timeLeft <= 10 && timeLeft > 3) soundCount(timeLeft);
+      if(timeLeft <= 3 && timeLeft > 0){
+        tone(980,.16,'sine',.13);
+        setTimeout(()=>tone(980,.11,'sine',.1),180);
+      }
+      updateHUD();
+      if(timeLeft<=0) finishGame();
+    },1000);
+  }
+
+  function finishGame(){
+    if(!playing) return;
+    playing=false;
+    locked=true;
+    clearInterval(timer);
+    timeLeft=0;
+    updateHUD();
+    board.querySelectorAll('button').forEach(b=>b.disabled=true);
+    saveScore();
+    $('#finalScore').textContent=score;
+    $('#finalBoards').textContent=completedBoards;
+    $('#finalCorrect').textContent=correctClicks;
+    $('#finalCombo').textContent=maxCombo;
+    soundCheer();
+    launchConfetti();
+    $('#finishOverlay').classList.add('show');
+  }
+
+  function launchConfetti(){
+    const layer=$('#confettiLayer');
+    layer.innerHTML='';
+    layer.classList.add('show');
+    const colors=['#e99048','#f5c45c','#75b48b','#7ca9d8','#d97a85','#b48bd6'];
+    for(let i=0;i<80;i++){
+      const c=document.createElement('i');
+      c.className='confetti';
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration=(2.2+Math.random()*2)+'s';
+      c.style.animationDelay=(Math.random()*.5)+'s';
+      c.style.transform=`rotate(${Math.random()*180}deg)`;
+      c.style.width=(7+Math.random()*7)+'px';
+      c.style.height=(10+Math.random()*12)+'px';
+      layer.appendChild(c);
+    }
+    setTimeout(()=>layer.classList.remove('show'),4500);
+  }
+
+  function getName(){
+    return ($('#playerName').value.trim() || '玩家').slice(0,12);
+  }
+
+  function saveScore(){
+    const key='furui_number_order_scores_v1';
+    let list=[];
+    try{ list=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+    list.push({
+      name:getName(),
+      difficulty:DIFFS[difficulty].label,
+      score,
+      boards:completedBoards,
+      correct:correctClicks,
+      ts:Date.now()
+    });
+    list.sort((a,b)=>b.score-a.score || b.boards-a.boards || b.correct-a.correct);
+    list=list.slice(0,30);
+    localStorage.setItem(key,JSON.stringify(list));
+    renderLeaderboard();
+  }
+
+  function renderLeaderboard(){
+    const key='furui_number_order_scores_v1';
+    let list=[];
+    try{ list=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+    const body=$('#leaderboardBody');
+    if(!list.length){
+      body.innerHTML='<tr><td colspan="6" style="color:#8a7a6d;padding:18px">尚無紀錄</td></tr>';
+      return;
+    }
+    body.innerHTML=list.map((r,i)=>`
+      <tr>
+        <td>${i+1}</td><td>${escapeHTML(r.name)}</td><td>${r.difficulty}</td>
+        <td><b>${r.score}</b></td><td>${r.boards}</td><td>${r.correct}</td>
+      </tr>`).join('');
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m]));
+  }
+
+  $('#clearBoardBtn').addEventListener('click',()=>{
+    if(confirm('確定要清除所有排行榜紀錄嗎？')){
+      localStorage.removeItem('furui_number_order_scores_v1');
+      renderLeaderboard();
+    }
+  });
+
+  $('#startBtn').addEventListener('click',startSequence);
+  $('#replayBtn').addEventListener('click',()=>{
+    $('#finishOverlay').classList.remove('show');
+    $('#confettiLayer').classList.remove('show');
+    startSequence();
+  });
+  $('#backBtn').addEventListener('click',()=>{
+    $('#finishOverlay').classList.remove('show');
+    $('#confettiLayer').classList.remove('show');
+    gameScreen.classList.remove('active');
+    homeScreen.classList.remove('hidden');
+    boardFrame.classList.remove('warning');
+    renderLeaderboard();
+    window.scrollTo({top:0,behavior:'auto'});
+  });
+
+  renderLeaderboard();
+})();
+</script>
+</body>
+</html>
