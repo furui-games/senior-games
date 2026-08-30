@@ -4,64 +4,105 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>福睿樂齡小遊戲</title>
+
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:"Microsoft JhengHei",sans-serif;
   background:#fffaf0;
   color:#4b3528;
 }
+
 main{
-  max-width:900px;
+  max-width:1100px;
   margin:auto;
-  padding:40px 20px;
+  padding:36px 18px 50px;
   text-align:center;
 }
+
 h1{
   font-size:48px;
-  margin:10px 0;
+  margin:10px 0 8px;
 }
+
 .subtitle{
   font-size:24px;
-  margin-bottom:40px;
+  margin-bottom:34px;
 }
+
 .games{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:24px;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:22px;
 }
+
 .game{
   background:white;
   border:4px solid #e2c994;
   border-radius:24px;
-  padding:30px 20px;
+  padding:26px 18px;
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
+
 .icon{
-  font-size:70px;
+  font-size:64px;
+  line-height:1.2;
 }
+
 h2{
-  font-size:30px;
-  margin:10px 0;
+  font-size:28px;
+  margin:12px 0 8px;
 }
+
 p{
-  font-size:20px;
+  font-size:19px;
+  margin:8px 0 18px;
 }
+
 .play{
   display:block;
-  margin-top:20px;
-  padding:18px;
+  padding:17px 12px;
   background:#579b68;
   color:white;
   text-decoration:none;
   border-radius:16px;
-  font-size:26px;
+  font-size:24px;
   font-weight:bold;
 }
+
+.play:active{
+  transform:scale(.98);
+}
+
 footer{
-  margin-top:45px;
+  margin-top:42px;
   font-size:18px;
   color:#806b5c;
+}
+
+@media(max-width:600px){
+  h1{
+    font-size:38px;
+  }
+
+  .subtitle{
+    font-size:21px;
+  }
+
+  .games{
+    grid-template-columns:1fr;
+  }
+
+  .game{
+    min-height:auto;
+  }
 }
 </style>
 </head>
@@ -75,10 +116,75 @@ footer{
 <div class="games">
 
   <div class="game">
-    <div class="icon">🐹</div>
-    <h2>福睿打地鼠</h2>
-    <p>反應力 × 專注力挑戰</p>
+    <div>
+      <div class="icon">🐹</div>
+      <h2>福睿打地鼠</h2>
+      <p>樂齡反應力 × 專注力挑戰</p>
+    </div>
     <a class="play" href="whack-a-mole.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🔍</div>
+      <h2>福睿找找不一樣</h2>
+      <p>樂齡視覺辨識 × 專注力挑戰</p>
+    </div>
+    <a class="play" href="find-different.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🐝</div>
+      <h2>福睿小蜜蜂</h2>
+      <p>樂齡手眼協調 × 反應力挑戰</p>
+    </div>
+    <a class="play" href="bee-shooter.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🃏</div>
+      <h2>福睿翻翻樂</h2>
+      <p>樂齡記憶力 × 專注力挑戰</p>
+    </div>
+    <a class="play" href="memory-match.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🥚</div>
+      <h2>福睿接雞蛋</h2>
+      <p>樂齡手眼協調 × 反應力挑戰</p>
+    </div>
+    <a class="play" href="catch-eggs.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🎵</div>
+      <h2>福睿節奏拍拍樂</h2>
+      <p>樂齡節奏感 × 反應力挑戰</p>
+    </div>
+    <a class="play" href="rhythm-tap.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🚦</div>
+      <h2>福睿紅綠燈</h2>
+      <p>樂齡反應力 × 抑制控制挑戰</p>
+    </div>
+    <a class="play" href="traffic-light.html">開始遊戲</a>
+  </div>
+
+  <div class="game">
+    <div>
+      <div class="icon">🔢</div>
+      <h2>福睿數字順順點</h2>
+      <p>樂齡視覺搜尋 × 專注力挑戰</p>
+    </div>
+    <a class="play" href="number-order.html">開始遊戲</a>
   </div>
 
 </div>
