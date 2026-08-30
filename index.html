@@ -1,13 +1,92 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>福睿樂齡小遊戲</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>福睿樂齡小遊戲</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Microsoft JhengHei",sans-serif;
+  background:#fffaf0;
+  color:#4b3528;
+}
+main{
+  max-width:900px;
+  margin:auto;
+  padding:40px 20px;
+  text-align:center;
+}
+h1{
+  font-size:48px;
+  margin:10px 0;
+}
+.subtitle{
+  font-size:24px;
+  margin-bottom:40px;
+}
+.games{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+.game{
+  background:white;
+  border:4px solid #e2c994;
+  border-radius:24px;
+  padding:30px 20px;
+}
+.icon{
+  font-size:70px;
+}
+h2{
+  font-size:30px;
+  margin:10px 0;
+}
+p{
+  font-size:20px;
+}
+.play{
+  display:block;
+  margin-top:20px;
+  padding:18px;
+  background:#579b68;
+  color:white;
+  text-decoration:none;
+  border-radius:16px;
+  font-size:26px;
+  font-weight:bold;
+}
+footer{
+  margin-top:45px;
+  font-size:18px;
+  color:#806b5c;
+}
+</style>
 </head>
+
 <body>
-  <script>
-    window.location.href = "whack-a-mole.html";
-  </script>
+<main>
+
+<h1>福睿樂齡小遊戲</h1>
+<div class="subtitle">動動腦・動動手・開心玩</div>
+
+<div class="games">
+
+  <div class="game">
+    <div class="icon">🐹</div>
+    <h2>福睿打地鼠</h2>
+    <p>反應力 × 專注力挑戰</p>
+    <a class="play" href="whack-a-mole.html">開始遊戲</a>
+  </div>
+
+</div>
+
+<footer>
+福睿樂齡小遊戲
+</footer>
+
+</main>
 </body>
 </html>
