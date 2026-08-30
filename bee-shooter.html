@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>福睿小蜜蜂</title>
+<style>
+  :root{
+    --bg:#fbf6ea;
+    --card:#fffdf8;
+    --ink:#65442f;
+    --accent:#5b9363;
+    --accent2:#65442f;
+    --danger:#d33838;
+    --soft:#fff0bd;
+    --gold:#d7bd7e;
+    --gold2:#cfae58;
+    --selected:#ffe6a1;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;
+    font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:#fbf6ea;
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .wrap{
+    width:min(760px,100%);
+    margin:0 auto;
+    padding:16px 14px 28px;
+  }
+  .title{
+    text-align:center;
+    color:#65442f;
+    font-size:clamp(30px,7vw,48px);
+    font-weight:900;
+    margin:4px 0 2px;
+  }
+  .subtitle{
+    text-align:center;
+    color:#6f6258;
+    font-size:clamp(17px,4.5vw,24px);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  .panel{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:none;
+    border:2px solid #ddc994;
+    padding:14px;
+    margin-bottom:14px;
+  }
+  .setup-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  label{
+    font-size:18px;
+    font-weight:800;
+    display:block;
+    margin-bottom:6px;
+  }
+  input,select{
+    width:100%;
+    font-size:20px;
+    padding:12px 14px;
+    border:2px solid #d9c79c;
+    border-radius:14px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .difficulty-buttons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+  }
+  .difficulty-btn{
+    padding:12px 6px;
+    font-size:20px;
+    background:#fffdf8;
+    color:#3f332b;
+    border:2px solid #d6c59d;
+  }
+  .difficulty-btn.selected{
+    background:#ffe6a1;
+    color:#2d261f;
+    border-color:#d0a72f;
+  }
+  .setup-actions{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  button{
+    border:0;
+    border-radius:16px;
+    font-size:20px;
+    font-weight:900;
+    padding:13px 18px;
+    cursor:pointer;
+  }
+  .primary{background:#5b9363;color:#fff;flex:1}
+  .secondary{background:#fffaf1;color:#65442f;border:2px solid #d7c69f}
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .stat{
+    background:#fffdf8;
+    border:2px solid #ddc994;
+    border-radius:15px;
+    text-align:center;
+    padding:8px 5px;
+  }
+  .stat .k{font-size:15px;font-weight:800}
+  .stat .v{font-size:26px;font-weight:900;line-height:1.15}
+  #time.danger{color:var(--danger)}
+  .game-shell{
+    position:relative;
+    border-radius:22px;
+    padding:6px;
+    background:#d4b76f;
+    transition:.2s;
+  }
+  .game-shell.alert{
+    background:var(--danger);
+    box-shadow:0 0 0 4px rgba(213,31,42,.18),0 0 24px rgba(213,31,42,.35);
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    aspect-ratio:4/5;
+    max-height:70vh;
+    background:linear-gradient(#2f2925 0%,#49382f 62%,#5a4435 100%);
+    border-radius:16px;
+    touch-action:none;
+  }
+  .controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:12px;
+  }
+  .move-btn{
+    min-height:78px;
+    font-size:54px;
+    line-height:1;
+    background:#fffdf8;
+    color:#3f332b;
+    border:3px solid #d7c69f;
+    user-select:none;
+    touch-action:none;
+  }
+  .move-btn:active,.move-btn.active{background:#ffe6a1;transform:scale(.99);border-color:#d0a72f}
+  .hint{
+    text-align:center;
+    font-size:16px;
+    font-weight:700;
+    margin-top:8px;
+    color:#7b6858;
+  }
+  .rank h2{margin:0 0 10px;font-size:24px}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:16px;
+  }
+  th,td{
+    padding:9px 5px;
+    border-bottom:1px solid #eadfc5;
+    text-align:center;
+  }
+  th{background:#fffaf0}
+  .rank-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:10px;
+  }
+  #overlay{
+    position:absolute;
+    inset:6px;
+    border-radius:16px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    color:#fff;
+    background:rgba(6,20,38,.72);
+    z-index:5;
+    padding:20px;
+  }
+  #overlay.show{display:flex}
+  #overlay .big{font-size:40px;font-weight:900}
+  #overlay .small{font-size:22px;font-weight:800;margin-top:8px}
+  .finish-card{
+    width:min(92%,560px); background:#fffdf8; color:#3f332b;
+    border:3px solid #d9c79c; border-radius:28px; padding:28px 24px 24px;
+    box-shadow:0 12px 34px rgba(0,0,0,.22);
+  }
+  #overlay .finish-card .big{color:#c66b2a;font-size:clamp(34px,8vw,50px)}
+  .finish-score{color:#d67629;font-size:clamp(48px,12vw,72px);font-weight:900;margin:14px 0 8px}
+  #overlay .finish-card .small{color:#403832;font-size:clamp(19px,5vw,27px);line-height:1.7;margin-top:6px}
+  .finish-actions{display:grid;gap:10px;margin-top:22px}
+  .finish-replay{width:100%;background:#f79443;color:#fff;min-height:64px;font-size:25px;box-shadow:0 7px 0 #c86520}
+  .finish-back{width:100%;background:#f3ecdf;color:#66584c;min-height:60px;font-size:23px}
+  #confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:999;
+    overflow:hidden;
+  }
+  .confetti-piece{
+    position:absolute;
+    bottom:-28px;
+    width:12px;
+    height:20px;
+    border-radius:3px;
+    animation:celebrateUp 2.2s ease-out forwards;
+  }
+  @keyframes celebrateUp{
+    0%{
+      transform:translate(0,0) rotate(0deg) scale(.9);
+      opacity:1;
+    }
+    72%{
+      transform:translate(var(--drift),calc(-1 * var(--rise))) rotate(620deg) scale(1);
+      opacity:1;
+    }
+    100%{
+      transform:translate(calc(var(--drift) * 1.25),calc(-1 * var(--rise) - 35px)) rotate(820deg) scale(.9);
+      opacity:0;
+    }
+  }
+  @media (max-width:520px){
+    .wrap{padding:10px 8px 20px}
+    .panel{padding:10px;border-radius:16px}
+    .setup-grid{grid-template-columns:1fr}
+    .setup-actions{flex-wrap:wrap}
+    .secondary{flex:1}
+    .stats{gap:5px}
+    .stat .k{font-size:13px}
+    .stat .v{font-size:23px}
+    .move-btn{min-height:74px;font-size:50px;line-height:1}
+    table{font-size:14px}
+    th,td{padding:7px 2px}
+  }
+</style>
+</head>
+<body>
+<div id="confetti"></div>
+<div class="wrap">
+  <div class="title">🐝 福睿小蜜蜂</div>
+  <div class="subtitle">樂齡手眼協調 × 反應力挑戰</div>
+
+  <div class="panel" id="setupPanel">
+    <div class="setup-grid">
+      <div>
+        <label for="playerName">玩家姓名</label>
+        <input id="playerName" maxlength="12" placeholder="請輸入姓名" />
+      </div>
+      <div>
+        <label>遊戲難度</label>
+        <div class="difficulty-buttons" id="difficultyButtons">
+          <button type="button" class="difficulty-btn selected" data-diff="easy">易</button>
+          <button type="button" class="difficulty-btn" data-diff="normal">中</button>
+          <button type="button" class="difficulty-btn" data-diff="hard">難</button>
+        </div>
+      </div>
+    </div>
+    <div class="setup-actions">
+      <button class="primary" id="startBtn">▶ 開始遊戲</button>
+      <button class="secondary" id="soundBtn">🔊 音效：開</button>
+    </div>
+  </div>
+
+  <div class="panel" id="gamePanel">
+    <div class="stats">
+      <div class="stat"><div class="k">分數</div><div class="v" id="score">0</div></div>
+      <div class="stat"><div class="k">剩餘時間</div><div class="v" id="time">60</div></div>
+      <div class="stat"><div class="k">擊落數</div><div class="v" id="kills">0</div></div>
+    </div>
+
+
+    <div class="game-shell" id="gameShell">
+      <div id="powerBar" style="display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:4;white-space:nowrap;text-align:center;font-size:19px;font-weight:900;background:#ffe6a1;border:2px solid #d0a72f;border-radius:14px;padding:7px 13px;color:#5a3a25;box-shadow:0 3px 8px rgba(0,0,0,.18);">
+        🎁 散彈模式：<span id="powerTime">5.0</span> 秒
+      </div>
+      <canvas id="game" width="640" height="800"></canvas>
+      <div id="overlay">
+        <div class="finish-card">
+          <div class="big" id="overlayTitle">準備開始</div>
+          <div class="finish-score" id="finishScore" style="display:none"></div>
+          <div class="small" id="overlayText">按下「開始遊戲」</div>
+          <div class="finish-actions" id="finishActions" style="display:none">
+            <button class="finish-replay" id="replayBtn">再玩一次</button>
+            <button class="finish-back" id="backBtn">回設定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="move-btn" id="leftBtn" aria-label="向左">⬅</button>
+      <button class="move-btn" id="rightBtn" aria-label="向右">➡</button>
+    </div>
+
+  </div>
+
+  <div class="panel rank">
+    <h2>🏆 本機排行榜</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>擊落</th></tr>
+        </thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+    <div class="rank-actions">
+      <button class="secondary" id="clearRankBtn">清除排行榜</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const startBtn = document.getElementById('startBtn');
+  const soundBtn = document.getElementById('soundBtn');
+  const playerName = document.getElementById('playerName');
+  const difficultyButtons = [...document.querySelectorAll('.difficulty-btn')];
+  let selectedDifficulty = 'easy';
+  const scoreEl = document.getElementById('score');
+  const timeEl = document.getElementById('time');
+  const killsEl = document.getElementById('kills');
+  const shell = document.getElementById('gameShell');
+  const overlay = document.getElementById('overlay');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlayText = document.getElementById('overlayText');
+  const finishScore = document.getElementById('finishScore');
+  const finishActions = document.getElementById('finishActions');
+  const replayBtn = document.getElementById('replayBtn');
+  const backBtn = document.getElementById('backBtn');
+  const leftBtn = document.getElementById('leftBtn');
+  const rightBtn = document.getElementById('rightBtn');
+  const rankBody = document.getElementById('rankBody');
+  const clearRankBtn = document.getElementById('clearRankBtn');
+  const powerBar = document.getElementById('powerBar');
+  const powerTimeEl = document.getElementById('powerTime');
+  const confettiLayer = document.getElementById('confetti');
+
+  const DIFF = {
+    easy:   {label:'易', enemyMax:5, enemySpeed:42, spawn:1050, diveChance:.00045, diveSpeed:80, fire:560},
+    normal: {label:'中', enemyMax:7, enemySpeed:56, spawn:820,  diveChance:.00075, diveSpeed:105, fire:500},
+    hard:   {label:'難', enemyMax:9, enemySpeed:70, spawn:650,  diveChance:.00105, diveSpeed:130, fire:455}
+  };
+
+  let gameRunning=false, score=0, kills=0, timeLeft=60;
+  let last=0, spawnTimer=0, shotTimer=0, secondTimer=0, raf=0;
+  let moveLeft=false, moveRight=false, soundOn=true;
+  let audioCtx=null;
+  let enemies=[], bullets=[], blasts=[], stars=[], treasures=[];
+  let treasureTimer=0, nextTreasureAt=9000, spreadTime=0;
+  let diff=DIFF.easy;
+  let hitCooldown=0;
+
+  const player={x:320,y:720,w:72,h:72,speed:320};
+
+  function resetStars(){
+    stars=Array.from({length:58},()=>({
+      x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+      r:Math.random()*1.8+.5,a:Math.random()*.6+.3
+    }));
+  }
+  resetStars();
+
+  function beep(freq=700,dur=.06,type='sine',vol=.045){
+    if(!soundOn) return;
+    try{
+      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.type=type; o.frequency.value=freq; g.gain.value=vol;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+      o.stop(audioCtx.currentTime+dur);
+    }catch(e){}
+  }
+
+  function cheer(){
+    if(!soundOn) return;
+    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.18,'triangle',.05),i*120));
+    setTimeout(()=>beep(1319,.35,'triangle',.05),520);
+  }
+
+  function drawPlayer(){
+    ctx.save();
+    ctx.translate(player.x,player.y);
+    ctx.font='64px system-ui';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('🚀',0,2);
+    ctx.restore();
+  }
+
+  function drawBee(e){
+    ctx.save();
+    ctx.translate(e.x,e.y);
+    if(e.angle) ctx.rotate(e.angle);
+    ctx.font = `${e.size}px system-ui`;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('🐝',0,0);
+    ctx.restore();
+  }
+
+  function spawnEnemy(){
+    if(enemies.length>=diff.enemyMax) return;
+    const size=58 + Math.random()*8;
+    enemies.push({
+      x:50+Math.random()*(canvas.width-100),
+      y:70+Math.random()*150,
+      size,
+      vx:(Math.random()<.5?-1:1)*diff.enemySpeed*(.75+Math.random()*.45),
+      diving:false,
+      diveTarget:0,
+      angle:0
+    });
+  }
+
+  function shoot(){
+    if(spreadTime>0){
+      bullets.push({x:player.x,y:player.y-38,w:9,h:24,speed:500,vx:0});
+      bullets.push({x:player.x-10,y:player.y-34,w:9,h:24,speed:485,vx:-135});
+      bullets.push({x:player.x+10,y:player.y-34,w:9,h:24,speed:485,vx:135});
+    }else{
+      bullets.push({x:player.x,y:player.y-38,w:9,h:24,speed:500,vx:0});
+    }
+  }
+
+  function spawnTreasure(){
+    treasures.push({
+      x:70+Math.random()*(canvas.width-140),
+      y:-40,
+      size:52,
+      speed:78
+    });
+  }
+
+  function activateSpread(){
+    spreadTime=5;
+    powerBar.style.display='block';
+    powerTimeEl.textContent='5.0';
+    beep(880,.10,'triangle',.05);
+    setTimeout(()=>beep(1100,.12,'triangle',.05),90);
+    setTimeout(()=>beep(1320,.14,'triangle',.05),180);
+  }
+
+  function explode(x,y){
+    blasts.push({x,y,t:0});
+    beep(920,.055,'square',.03);
+    setTimeout(()=>beep(560,.07,'triangle',.028),30);
+  }
+
+  function hit(a,b){
+    const ar={x:a.x-a.w/2,y:a.y-a.h/2,w:a.w,h:a.h};
+    const br={x:b.x-b.size*.34,y:b.y-b.size*.3,w:b.size*.68,h:b.size*.6};
+    return ar.x < br.x+br.w && ar.x+ar.w > br.x && ar.y < br.y+br.h && ar.y+ar.h > br.y;
+  }
+
+  function update(dt){
+    if(moveLeft) player.x-=player.speed*dt;
+    if(moveRight) player.x+=player.speed*dt;
+    player.x=Math.max(45,Math.min(canvas.width-45,player.x));
+
+    spawnTimer += dt*1000;
+    shotTimer += dt*1000;
+    secondTimer += dt*1000;
+    treasureTimer += dt*1000;
+
+    if(spreadTime>0){
+      spreadTime=Math.max(0,spreadTime-dt);
+      powerTimeEl.textContent=spreadTime.toFixed(1);
+      if(spreadTime<=0){
+        powerBar.style.display='none';
+      }
+    }
+
+    if(treasureTimer>=nextTreasureAt && treasures.length===0){
+      treasureTimer=0;
+      nextTreasureAt=10000+Math.random()*5000;
+      spawnTreasure();
+    }
+
+    if(spawnTimer>=diff.spawn){
+      spawnTimer=0;
+      spawnEnemy();
+    }
+    if(shotTimer>=diff.fire){
+      shotTimer=0;
+      shoot();
+    }
+    if(secondTimer>=1000){
+      secondTimer-=1000;
+      timeLeft--;
+      timeEl.textContent=timeLeft;
+      if(timeLeft<=10){
+        timeEl.classList.add('danger');
+        shell.classList.add('alert');
+        if(timeLeft>0) beep(
+          timeLeft<=3 ? 980 : 720,
+          timeLeft<=3 ? .18 : .11,
+          'square',
+          timeLeft<=3 ? .14 : .10
+        );
+      }
+      if(timeLeft<=0){
+        endGame();
+        return;
+      }
+    }
+
+    bullets.forEach(b=>{ b.y-=b.speed*dt; b.x+=(b.vx||0)*dt; });
+    bullets=bullets.filter(b=>b.y>-40 && b.x>-30 && b.x<canvas.width+30);
+
+    enemies.forEach(e=>{
+      if(!e.diving){
+        e.x+=e.vx*dt;
+        if(e.x<45 || e.x>canvas.width-45) e.vx*=-1;
+        if(Math.random()<diff.diveChance*dt*1000){
+          e.diving=true;
+          e.diveTarget=player.x;
+        }
+      }else{
+        const dx=e.diveTarget-e.x;
+        e.x+=Math.sign(dx)*Math.min(Math.abs(dx),diff.diveSpeed*.5*dt);
+        e.y+=diff.diveSpeed*dt;
+        e.angle=Math.sin(e.y/40)*.12;
+        if(e.y>canvas.height+60){
+          e.y=75+Math.random()*100;
+          e.x=60+Math.random()*(canvas.width-120);
+          e.diving=false;
+          e.angle=0;
+        }
+      }
+    });
+
+    hitCooldown=Math.max(0,hitCooldown-dt);
+    if(hitCooldown<=0){
+      const pr={x:player.x-player.w*.32,y:player.y-player.h*.30,w:player.w*.64,h:player.h*.60};
+      for(let ei=enemies.length-1;ei>=0;ei--){
+        const e=enemies[ei];
+        const er={x:e.x-e.size*.32,y:e.y-e.size*.28,w:e.size*.64,h:e.size*.56};
+        if(pr.x < er.x+er.w && pr.x+pr.w > er.x && pr.y < er.y+er.h && pr.y+pr.h > er.y){
+          enemies.splice(ei,1);
+          score=Math.max(0,score-5);
+          scoreEl.textContent=score;
+          hitCooldown=.7;
+          beep(180,.18,'sawtooth',.075);
+          setTimeout(()=>beep(120,.20,'square',.055),80);
+          blasts.push({x:player.x,y:player.y-10,t:0});
+          break;
+        }
+      }
+    }
+
+    for(let bi=bullets.length-1;bi>=0;bi--){
+      const b=bullets[bi];
+      let removed=false;
+      for(let ei=enemies.length-1;ei>=0;ei--){
+        const e=enemies[ei];
+        if(hit(b,e)){
+          bullets.splice(bi,1);
+          enemies.splice(ei,1);
+          score+=10;
+          kills++;
+          scoreEl.textContent=score;
+          killsEl.textContent=kills;
+          explode(e.x,e.y);
+          removed=true;
+          break;
+        }
+      }
+      if(removed) continue;
+    }
+
+    treasures.forEach(t=>t.y+=t.speed*dt);
+    treasures=treasures.filter(t=>t.y<canvas.height+60);
+
+    const prTreasure={x:player.x-player.w*.34,y:player.y-player.h*.30,w:player.w*.68,h:player.h*.60};
+    for(let ti=treasures.length-1;ti>=0;ti--){
+      const t=treasures[ti];
+      const tr={x:t.x-t.size*.34,y:t.y-t.size*.34,w:t.size*.68,h:t.size*.68};
+      if(prTreasure.x < tr.x+tr.w && prTreasure.x+prTreasure.w > tr.x &&
+         prTreasure.y < tr.y+tr.h && prTreasure.y+prTreasure.h > tr.y){
+        treasures.splice(ti,1);
+        activateSpread();
+        blasts.push({x:player.x,y:player.y-40,t:0});
+        break;
+      }
+    }
+
+    blasts.forEach(x=>x.t+=dt);
+    blasts=blasts.filter(x=>x.t<.38);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const grad=ctx.createLinearGradient(0,0,0,canvas.height);
+    grad.addColorStop(0,'#2f2925');
+    grad.addColorStop(.68,'#49382f');
+    grad.addColorStop(1,'#5a4435');
+    ctx.fillStyle=grad;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    stars.forEach(s=>{
+      ctx.globalAlpha=s.a;
+      ctx.fillStyle='#fff';
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+
+    enemies.forEach(drawBee);
+
+    treasures.forEach(t=>{
+      ctx.save();
+      ctx.font=`${t.size}px system-ui`;
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText('🎁',t.x,t.y);
+      ctx.restore();
+    });
+
+    ctx.fillStyle='#ffe27a';
+    bullets.forEach(b=>{
+      ctx.fillRect(b.x-b.w/2,b.y-b.h/2,b.w,b.h);
+      ctx.fillStyle='#fff7bf';
+      ctx.fillRect(b.x-2,b.y-b.h/2-5,4,7);
+      ctx.fillStyle='#ffe27a';
+    });
+
+    blasts.forEach(ex=>{
+      const p=ex.t/.38;
+      ctx.globalAlpha=1-p;
+      ctx.font=`${40+45*p}px system-ui`;
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText('💥',ex.x,ex.y);
+      ctx.globalAlpha=1;
+    });
+
+    drawPlayer();
+  }
+
+  function loop(ts){
+    if(!gameRunning) return;
+    if(!last) last=ts;
+    const dt=Math.min(.032,(ts-last)/1000);
+    last=ts;
+    update(dt);
+    draw();
+    if(gameRunning) raf=requestAnimationFrame(loop);
+  }
+
+  function startGame(){
+    diff=DIFF[selectedDifficulty];
+    score=0;kills=0;timeLeft=60;
+    scoreEl.textContent='0';
+    killsEl.textContent='0';
+    timeEl.textContent='60';
+    timeEl.classList.remove('danger');
+    shell.classList.remove('alert');
+    enemies=[];bullets=[];blasts=[];treasures=[];
+    treasureTimer=0;nextTreasureAt=8000+Math.random()*4000;spreadTime=0;
+    powerBar.style.display='none';
+    player.x=canvas.width/2;
+    spawnTimer=0;shotTimer=0;secondTimer=0;last=0;hitCooldown=0;
+    gameRunning=true;
+    overlay.classList.remove('show');
+    finishScore.style.display='none';
+    finishActions.style.display='none';
+    startBtn.textContent='↻ 重新開始';
+    beep(660,.08,'triangle',.04);
+    setTimeout(()=>beep(880,.1,'triangle',.04),90);
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        const gameRect = shell.getBoundingClientRect();
+        const targetY = window.scrollY + gameRect.top + gameRect.height/2 - window.innerHeight/2;
+        window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'});
+      });
+    });
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(loop);
+  }
+
+  function endGame(){
+    gameRunning=false;
+    cancelAnimationFrame(raf);
+    overlayTitle.textContent='🎉 挑戰完成！';
+    finishScore.textContent=`${score} 分`;
+    finishScore.style.display='block';
+    overlayText.innerHTML=`擊落小蜜蜂：<b>${kills}</b> 隻<br>難度：<b>${diff.label}</b>`;
+    finishActions.style.display='grid';
+    overlay.classList.add('show');
+    saveRank();
+    launchConfetti();
+    cheer();
+  }
+
+  function launchConfetti(){
+    confettiLayer.innerHTML='';
+    const colors=['#ffcc33','#ff6b6b','#4dabf7','#69db7c','#b197fc','#ffa94d','#f783ac'];
+    for(let i=0;i<110;i++){
+      const p=document.createElement('div');
+      p.className='confetti-piece';
+
+      // 彩帶由畫面底部左右兩側與中央向上噴發。
+      const group=Math.random();
+      let left;
+      if(group<.38) left=5+Math.random()*22;
+      else if(group<.76) left=73+Math.random()*22;
+      else left=35+Math.random()*30;
+
+      const drift=(Math.random()-.5)*260;
+      const rise=260+Math.random()*430;
+
+      p.style.left=left+'vw';
+      p.style.background=colors[Math.floor(Math.random()*colors.length)];
+      p.style.setProperty('--drift',drift+'px');
+      p.style.setProperty('--rise',rise+'px');
+      p.style.animationDelay=(Math.random()*.35)+'s';
+      p.style.animationDuration=(1.5+Math.random()*.85)+'s';
+
+      if(Math.random()<.45){
+        p.style.width='7px';
+        p.style.height='25px';
+        p.style.borderRadius='50%';
+      }
+
+      confettiLayer.appendChild(p);
+    }
+    setTimeout(()=>confettiLayer.innerHTML='',3200);
+  }
+
+  function getRanks(){
+    try{return JSON.parse(localStorage.getItem('furei_bee_rank')||'[]')}catch(e){return[]}
+  }
+  function saveRank(){
+    const name=playerName.value.trim()||'玩家';
+    const ranks=getRanks();
+    ranks.push({name,diff:diff.label,score,kills});
+    ranks.sort((a,b)=>b.score-a.score || b.kills-a.kills);
+    localStorage.setItem('furei_bee_rank',JSON.stringify(ranks.slice(0,20)));
+    renderRank();
+  }
+  function renderRank(){
+    const ranks=getRanks();
+    rankBody.innerHTML=ranks.length?ranks.map((r,i)=>`
+      <tr><td>${i+1}</td><td>${escapeHtml(r.name)}</td><td>${r.diff}</td><td>${r.score}</td><td>${r.kills}</td></tr>
+    `).join(''):`<tr><td colspan="5">尚無紀錄</td></tr>`;
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
+
+  function setHold(btn,dir){
+    const down=e=>{
+      e.preventDefault();
+      if(dir==='left') moveLeft=true; else moveRight=true;
+      btn.classList.add('active');
+    };
+    const up=e=>{
+      e.preventDefault();
+      if(dir==='left') moveLeft=false; else moveRight=false;
+      btn.classList.remove('active');
+    };
+    btn.addEventListener('pointerdown',down);
+    btn.addEventListener('pointerup',up);
+    btn.addEventListener('pointercancel',up);
+    btn.addEventListener('pointerleave',up);
+  }
+
+  setHold(leftBtn,'left');
+  setHold(rightBtn,'right');
+
+  window.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft'){e.preventDefault();moveLeft=true}
+    if(e.key==='ArrowRight'){e.preventDefault();moveRight=true}
+  },{passive:false});
+  window.addEventListener('keyup',e=>{
+    if(e.key==='ArrowLeft') moveLeft=false;
+    if(e.key==='ArrowRight') moveRight=false;
+  });
+
+  difficultyButtons.forEach(btn=>btn.addEventListener('click',()=>{
+    selectedDifficulty=btn.dataset.diff;
+    difficultyButtons.forEach(b=>b.classList.toggle('selected',b===btn));
+    beep(620,.05,'triangle',.025);
+  }));
+
+  replayBtn.addEventListener('click',startGame);
+  backBtn.addEventListener('click',()=>{
+    overlay.classList.remove('show');
+    finishScore.style.display='none';
+    finishActions.style.display='none';
+    document.getElementById('setupPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  startBtn.addEventListener('click',startGame);
+  soundBtn.addEventListener('click',()=>{
+    soundOn=!soundOn;
+    soundBtn.textContent=soundOn?'🔊 音效：開':'🔇 音效：關';
+    if(soundOn) beep(760,.07,'triangle',.04);
+  });
+  clearRankBtn.addEventListener('click',()=>{
+    if(confirm('確定要清除本機排行榜紀錄嗎？')){
+      localStorage.removeItem('furei_bee_rank');
+      renderRank();
+    }
+  });
+
+  overlay.classList.add('show');
+  draw();
+  renderRank();
+})();
+</script>
+</body>
+</html>
