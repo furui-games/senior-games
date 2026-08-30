@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>福睿紅綠燈</title>
+<style>
+  :root{
+    --bg:#fff8ec;
+    --panel:#ffffff;
+    --ink:#2f3a3d;
+    --muted:#6f7b7d;
+    --accent:#ef7c4d;
+    --green:#22b455;
+    --red:#e54242;
+    --yellow:#f3b533;
+    --line:#ead9c9;
+    --shadow:0 12px 30px rgba(96,67,39,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#fffaf1,#fff4e6);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;min-height:100%}
+  body{min-height:100vh;overflow-x:hidden}
+  button,input{font:inherit}
+  .wrap{width:min(980px,100%);margin:auto;padding:18px}
+  .header{text-align:center;margin-bottom:14px}
+  h1{font-size:clamp(32px,6vw,54px);margin:6px 0 4px;color:#ce5f38;letter-spacing:.03em}
+  .subtitle{font-size:clamp(18px,3.5vw,25px);font-weight:800;color:#6c665d}
+  .settings{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:var(--shadow);transition:.25s}
+  .settings.collapsed{padding:9px 14px;border-radius:18px}
+  .settings.collapsed .settings-body{display:none}
+  .settings-title{font-size:20px;font-weight:900;text-align:center;color:#8a5f43}
+  .settings.collapsed .settings-title{font-size:17px}
+  .settings-body{margin-top:12px}
+  .form-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:10px 0}
+  .name{width:min(280px,90vw);padding:13px 16px;border:2px solid #d9c2ad;border-radius:14px;font-size:20px;outline:none;background:#fffdfa}
+  .name:focus{border-color:#e58f66}
+  .difficulty{display:flex;gap:8px;flex-wrap:nowrap;justify-content:center;width:100%}
+  .diff-btn,.sound-btn,.start-btn,.secondary-btn,.danger-btn{border:0;border-radius:14px;cursor:pointer;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.08);transition:.12s transform,.12s box-shadow}
+  button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.08)}
+  .diff-btn{flex:1;max-width:150px;min-width:64px;padding:11px 7px;background:#f6eadf;color:#695447;font-size:18px}
+  .diff-btn.active{background:#ef8a5b;color:#fff}
+  .sound-btn{padding:12px 18px;background:#f4c45b;color:#5c491b;font-size:18px}
+  .start-btn{padding:14px 28px;background:#25a75a;color:white;font-size:23px;min-width:190px}
+  .game-shell{margin:16px auto 0;background:rgba(255,255,255,.95);border:4px solid transparent;border-radius:28px;box-shadow:var(--shadow);padding:14px;transition:border-color .2s, box-shadow .2s;max-width:760px}
+  .game-shell.last10{animation:warnBorder 1s ease-in-out infinite}
+  .flame-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden;border-radius:22px;display:none}
+  .game-shell.last10 .flame-layer{display:block}
+  .flame{position:absolute;bottom:-18px;font-size:34px;opacity:.82;animation:flameRise .9s ease-in-out infinite alternate;filter:drop-shadow(0 0 7px rgba(255,91,0,.32))}
+  .game-shell.last3 .flame{font-size:42px;animation-duration:.38s;opacity:.95}
+  @keyframes flameRise{from{transform:translateY(10px) scale(.88)}to{transform:translateY(-8px) scale(1.08)}}
+  @keyframes warnBorder{0%,100%{border-color:#ffb0b0;box-shadow:0 0 0 0 rgba(229,66,66,.15),var(--shadow)}50%{border-color:var(--red);box-shadow:0 0 0 9px rgba(229,66,66,.12),var(--shadow)}}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+  .stat{background:#fff5e9;border:1px solid #f0d7bf;border-radius:14px;text-align:center;padding:7px 4px;min-height:68px}
+  .stat-label{font-size:14px;color:#7a6d62;font-weight:800}
+  .stat-value{font-size:clamp(20px,4vw,30px);font-weight:1000;line-height:1.15;margin-top:2px}
+  .time-warning{color:var(--red)!important;animation:timePulse .55s ease-in-out infinite alternate}
+  @keyframes timePulse{to{transform:scale(1.08)}}
+  .game-area{height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,#fffefb,#fff9ef)}
+  .traffic-light{width:500px;max-width:90%;background:#32393b;border-radius:42px;padding:20px 24px;display:flex;align-items:center;justify-content:center;gap:18px;border:6px solid #24292b;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18),0 12px 24px rgba(0,0,0,.13);position:relative}
+  .traffic-light:before{content:"";position:absolute;width:70px;height:28px;background:#555d5f;left:50%;top:-28px;transform:translateX(-50%);border-radius:14px 14px 0 0}
+  .lamp{width:132px;height:132px;border-radius:50%;margin:0;flex:0 0 auto;background:#5e6668;border:8px solid #1d2224;box-shadow:inset 0 8px 14px rgba(255,255,255,.1),inset 0 -12px 16px rgba(0,0,0,.32)}
+  .lamp.red.on{background:radial-gradient(circle at 35% 30%,#ff8d8d,#ef3e3e 48%,#b81f1f);box-shadow:0 0 28px rgba(229,66,66,.55),inset 0 8px 14px rgba(255,255,255,.22)}
+  .lamp.yellow.on{background:radial-gradient(circle at 35% 30%,#fff4a3,#f4c430 48%,#c58b00);box-shadow:0 0 28px rgba(244,196,48,.55),inset 0 8px 14px rgba(255,255,255,.22)}
+  .lamp.green.on{background:radial-gradient(circle at 35% 30%,#9cf8b7,#29bf5d 48%,#13813a);box-shadow:0 0 28px rgba(34,180,85,.55),inset 0 8px 14px rgba(255,255,255,.22)}
+  .lamp + .lamp{margin-top:0}
+  .signal-text{height:62px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:1000;margin:10px 0 2px;letter-spacing:.05em}
+  .signal-text.red{color:var(--red)}
+  .signal-text.yellow{color:#c58b00}
+  .signal-text.green{color:var(--green)}
+  .feedback{height:52px;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:26px;text-align:center;pointer-events:none}
+  .feedback.good{color:#188c46}.feedback.bad{color:#c93030}.feedback.bonus{color:#d18b00}
+  .go-btn{width:min(390px,86%);height:125px;border-radius:34px;border:0;background:linear-gradient(180deg,#35c76a,#1f9d50);color:white;font-weight:1000;font-size:54px;letter-spacing:.05em;cursor:pointer;box-shadow:0 10px 0 #167d3d,0 16px 22px rgba(19,116,57,.22);touch-action:manipulation;user-select:none}
+  .go-btn.red-stop{background:linear-gradient(180deg,#b9bdbb,#969c98);color:#fff;box-shadow:0 10px 0 #747a76,0 16px 22px rgba(80,80,80,.16)}
+  .go-btn.yellow-wait{background:linear-gradient(180deg,#ffd85a,#e9b71f);color:#5d4800;box-shadow:0 10px 0 #bd8d0c,0 16px 22px rgba(160,120,0,.18)}
+  .go-btn:disabled{background:#aeb7b0;color:#f3f5f3;box-shadow:0 8px 0 #858e87;cursor:default}
+  .go-btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 5px 0 #167d3d,0 10px 16px rgba(19,116,57,.18)}
+  .hint{height:28px;margin-top:9px;color:#766f68;font-size:16px;font-weight:700;text-align:center}
+  .shake-target.shake{animation:shake .23s linear}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .star{position:absolute;font-size:30px;animation:starPop .8s ease-out forwards}
+  @keyframes starPop{0%{opacity:0;transform:translateY(15px) scale(.4) rotate(0)}35%{opacity:1}100%{opacity:0;transform:translateY(-85px) scale(1.25) rotate(35deg)}}
+  .section{margin-top:18px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:22px;padding:15px;box-shadow:var(--shadow)}
+  .section h2{margin:0 0 10px;text-align:center;color:#8a5f43;font-size:25px}
+  table{width:100%;border-collapse:collapse;font-size:15px;background:#fff;border-radius:12px;overflow:hidden}
+  th,td{padding:8px 5px;border-bottom:1px solid #eee2d6;text-align:center;white-space:nowrap}
+  th{background:#f9e8d5;color:#684e3c}
+  .table-wrap{overflow-x:auto}
+  .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .secondary-btn{background:#ef8a5b;color:#fff;padding:12px 22px;font-size:19px}
+  .danger-btn{background:#df5f5f;color:#fff;padding:10px 18px;font-size:16px}
+  .overlay{position:fixed;inset:0;background:rgba(59,43,32,.46);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
+  .overlay.show{display:flex}
+  .result-card{width:min(520px,95vw);background:#fffaf2;border-radius:28px;padding:24px;text-align:center;box-shadow:0 26px 70px rgba(0,0,0,.28);position:relative;overflow:hidden}
+  .result-card h2{font-size:38px;color:#d2613b;margin:0 0 10px}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+  .result-box{background:#fff0dd;border-radius:15px;padding:12px;font-size:18px;font-weight:800}
+  .result-box b{display:block;font-size:30px;color:#3b484b;margin-top:3px}
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:29;overflow:hidden}
+  .confetti{position:absolute;bottom:-30px;width:10px;height:20px;border-radius:2px;animation:confettiUp 2.1s ease-out forwards}
+  @keyframes confettiUp{0%{opacity:0;transform:translateY(0) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-105vh) rotate(700deg)}}
+  @media (max-width:680px){
+    .wrap{padding:10px}
+    .header{margin-bottom:9px}
+    h1{font-size:36px}
+    .subtitle{font-size:18px}
+    .settings{padding:12px}
+    .stats{grid-template-columns:repeat(5,1fr);gap:5px}
+    .stat{min-height:61px;padding:5px 2px;border-radius:11px}
+    .stat-label{font-size:11px}
+    .stat-value{font-size:20px}
+    .game-shell{padding:8px;margin-top:10px;border-radius:22px}
+    .game-area{height:470px}
+    .traffic-light{width:390px;max-width:92%;padding:15px 16px;border-radius:30px;gap:10px}
+    .lamp{width:96px;height:96px;border-width:7px}
+    .lamp + .lamp{margin-top:0}
+    .signal-text{font-size:36px;height:55px;margin-top:5px}
+    .feedback{font-size:21px;height:45px;padding:0 6px}
+    .go-btn{height:112px;font-size:48px;border-radius:30px}
+    .hint{font-size:13px}
+    .difficulty{gap:5px}
+    .diff-btn{font-size:16px;padding:10px 4px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>福睿紅綠燈</h1>
+    <div class="subtitle">樂齡反應力 × 專注力挑戰</div>
+  </div>
+
+  <div class="settings" id="settings">
+    <div class="settings-title" id="settingsTitle">遊戲設定</div>
+    <div class="settings-body">
+      <div class="form-row"><input id="playerName" class="name" maxlength="12" placeholder="請輸入姓名" /></div>
+      <div class="form-row">
+        <div class="difficulty" id="difficultyGroup">
+          <button class="diff-btn active" data-level="easy">易</button>
+          <button class="diff-btn" data-level="medium">中</button>
+          <button class="diff-btn" data-level="hard">難</button>
+          <button class="diff-btn" data-level="ultimate">終級</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <button id="soundBtn" class="sound-btn">🔊 音效：開</button>
+        <button id="startBtn" class="start-btn">開始遊戲</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-shell" id="gameShell">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">分數</div><div class="stat-value" id="score">0</div></div>
+      <div class="stat"><div class="stat-label">時間</div><div class="stat-value" id="time">60</div></div>
+      <div class="stat"><div class="stat-label">答對</div><div class="stat-value" id="correct">0</div></div>
+      <div class="stat"><div class="stat-label">失誤</div><div class="stat-value" id="mistakes">0</div></div>
+      <div class="stat"><div class="stat-label">連擊</div><div class="stat-value" id="combo">0</div></div>
+    </div>
+
+    <div class="game-area shake-target" id="gameArea">
+      <div class="flame-layer" id="flameLayer" aria-hidden="true"></div>
+      <div class="traffic-light" aria-label="紅綠燈">
+        <div class="lamp green" id="greenLamp"></div>
+        <div class="lamp yellow" id="yellowLamp"></div>
+        <div class="lamp red" id="redLamp"></div>
+      </div>
+      <div class="signal-text" id="signalText">準備開始</div>
+      <div class="feedback" id="feedback">綠燈按 GO，黃燈等一下，紅燈不要按</div>
+      <button id="goBtn" class="go-btn" disabled>GO！</button>
+      <div class="hint">手機點 GO；電腦也可按空白鍵</div>
+      <div class="stars" id="stars"></div>
+    </div>
+  </div>
+
+  <div class="section" id="leaderSection">
+    <h2>本機排行榜</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>答對</th><th>失誤</th><th>最高連擊</th></tr></thead>
+        <tbody id="leaderBody"></tbody>
+      </table>
+    </div>
+    <div class="actions"><button class="danger-btn" id="clearRankBtn">清除排行榜紀錄</button></div>
+  </div>
+</div>
+
+<div class="confetti-layer" id="confettiLayer"></div>
+<div class="overlay" id="resultOverlay">
+  <div class="result-card">
+    <h2>🎉 完成挑戰！</h2>
+    <div id="resultName" style="font-size:20px;font-weight:900;color:#715844"></div>
+    <div class="result-grid">
+      <div class="result-box">分數<b id="resultScore">0</b></div>
+      <div class="result-box">答對次數<b id="resultCorrect">0</b></div>
+      <div class="result-box">失誤次數<b id="resultMistakes">0</b></div>
+      <div class="result-box">最高連擊<b id="resultMaxCombo">0</b></div>
+    </div>
+    <div class="actions">
+      <button class="secondary-btn" id="playAgainBtn">再玩一次</button>
+      <button class="secondary-btn" id="backSettingsBtn">回設定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {
+    playing:false, level:'easy', sound:true, score:0, time:60, correct:0, mistakes:0,
+    combo:0, maxCombo:0, signal:null, greenResponded:false, signalTimer:null, clockTimer:null,
+    lastCountdownSound:0
+  };
+
+  const levelName = {easy:'易',medium:'中',hard:'難',ultimate:'終級'};
+  const levelRanges = {
+    easy:[1800,3000], medium:[1300,2300], hard:[900,1750], ultimate:[650,1450]
+  };
+
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!state.sound) return null;
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function tone(freq=440,dur=.12,type='sine',gain=.1,delay=0){
+    if(!state.sound) return;
+    const ctx=ensureAudio(); if(!ctx) return;
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(.0001,ctx.currentTime+delay);
+    g.gain.exponentialRampToValueAtTime(gain,ctx.currentTime+delay+.015);
+    g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+delay+dur);
+    o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+dur+.02);
+  }
+  function soundCorrect(){tone(620,.10,'sine',.11);tone(820,.13,'sine',.09,.08)}
+  function soundError(){tone(180,.16,'triangle',.11);tone(135,.15,'triangle',.08,.08)}
+  function soundBonus(){tone(660,.11,'sine',.10);tone(880,.11,'sine',.10,.09);tone(1100,.18,'sine',.09,.18)}
+  function soundCountdown(n){
+    // 樂齡版：最後 10 秒倒數提示音加大，最後 3 秒維持加快節奏
+    if(n<=3){ tone(880,.11,'square',.22); tone(980,.10,'square',.20,.18); tone(1080,.10,'square',.18,.36); }
+    else { tone(700,.15,'square',.20); }
+  }
+  function soundCheer(){
+    [523,659,784,1047].forEach((f,i)=>tone(f,.22,'sine',.08,i*.09));
+    setTimeout(()=>{ if(!state.sound) return; tone(880,.24,'triangle',.06); tone(1175,.30,'triangle',.05,.08); },400);
+  }
+
+  function updateStats(){
+    $('score').textContent=state.score;
+    $('time').textContent=state.time;
+    $('correct').textContent=state.correct;
+    $('mistakes').textContent=state.mistakes;
+    $('combo').textContent=state.combo;
+  }
+  function setFeedback(text,type=''){
+    const el=$('feedback'); el.textContent=text; el.className='feedback'+(type?' '+type:'');
+  }
+  function setSignal(type){
+    state.signal=type; state.greenResponded=false;
+    $('redLamp').classList.toggle('on',type==='red');
+    $('yellowLamp').classList.toggle('on',type==='yellow');
+    $('greenLamp').classList.toggle('on',type==='green');
+    const t=$('signalText');
+    $('goBtn').classList.remove('red-stop','yellow-wait');
+    if(type==='red'){
+      t.textContent='停！'; t.className='signal-text red'; $('goBtn').classList.add('red-stop');
+      setFeedback('紅燈要停，不要按','');
+    }else if(type==='yellow'){
+      t.textContent='等一下！'; t.className='signal-text yellow'; $('goBtn').classList.add('yellow-wait');
+      setFeedback('黃燈緩衝中，按了也不計分','');
+    }else{
+      t.textContent='按！'; t.className='signal-text green';
+      setFeedback('看到綠燈，快按 GO！','');
+    }
+  }
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+  function scheduleNextSignal(){
+    if(!state.playing) return;
+    clearTimeout(state.signalTimer);
+    const yellowRanges={easy:[700,1000],medium:[600,900],hard:[500,800],ultimate:[400,700]};
+    let next;
+    let delay;
+    if(state.signal==='green'){
+      next='yellow';
+      const [min,max]=levelRanges[state.level];
+      delay=rand(min,max);
+    }else if(state.signal==='yellow'){
+      next='red';
+      const [min,max]=yellowRanges[state.level];
+      delay=rand(min,max);
+    }else{
+      next='green';
+      const [min,max]=levelRanges[state.level];
+      delay=rand(min,max);
+    }
+    state.signalTimer=setTimeout(()=>{
+      if(!state.playing) return;
+      setSignal(next);
+      scheduleNextSignal();
+    },delay);
+  }
+  function createStars(){
+    const box=$('stars'); box.innerHTML='';
+    const emojis=['⭐','✨','🌟','⭐','✨'];
+    for(let i=0;i<10;i++){
+      const s=document.createElement('span'); s.className='star'; s.textContent=emojis[i%emojis.length];
+      s.style.left=rand(20,80)+'%'; s.style.top=rand(55,78)+'%'; s.style.animationDelay=(Math.random()*.16)+'s';
+      box.appendChild(s);
+    }
+    setTimeout(()=>box.innerHTML='',950);
+  }
+  function shake(){
+    const el=$('gameArea'); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+  }
+  function pressGo(){
+    if(!state.playing) return;
+    if(state.signal==='green'){
+      state.greenResponded=true;
+      state.score+=5; state.correct++; state.combo++; state.maxCombo=Math.max(state.maxCombo,state.combo);
+      setFeedback('⭕ 很棒！＋5','good'); soundCorrect();
+      if(state.combo%5===0){ state.score+=10; setFeedback('🌟 連續 5 次！額外＋10','bonus'); soundBonus(); createStars(); }
+      updateStats();
+    }else if(state.signal==='yellow'){
+      setFeedback('🟡 黃燈緩衝，不計分','');
+    }else if(state.signal==='red'){
+      state.score=Math.max(0,state.score-5); state.mistakes++; state.combo=0; updateStats();
+      setFeedback('❌ 紅燈要停喔！－5','bad'); soundError(); shake();
+    }
+  }
+
+  function buildFlames(){
+    const layer=$('flameLayer'); layer.innerHTML='';
+    for(let i=0;i<13;i++){
+      const f=document.createElement('span'); f.className='flame'; f.textContent='🔥';
+      f.style.left=(2+i*7.7)+'%'; f.style.animationDelay=(i%4)*.11+'s';
+      layer.appendChild(f);
+    }
+  }
+
+  function startGame(){
+    ensureAudio();
+    const name=$('playerName').value.trim();
+    if(!name){ $('playerName').focus(); $('playerName').style.borderColor='#e54242'; setTimeout(()=>$('playerName').style.borderColor='',700); return; }
+    closeResult();
+    Object.assign(state,{playing:true,score:0,time:60,correct:0,mistakes:0,combo:0,maxCombo:0,signal:null,greenResponded:false,lastCountdownSound:0});
+    updateStats();
+    $('time').classList.remove('time-warning'); $('gameShell').classList.remove('last10','last3'); buildFlames();
+    $('settings').classList.add('collapsed'); $('settingsTitle').textContent='遊戲進行中';
+    $('goBtn').disabled=false; $('goBtn').classList.remove('red-stop','yellow-wait');
+    setFeedback('準備好囉！','');
+    $('signalText').textContent='開始！'; $('signalText').className='signal-text green';
+    $('redLamp').classList.remove('on'); $('yellowLamp').classList.remove('on'); $('greenLamp').classList.remove('on');
+    setTimeout(()=>{if(state.playing){setSignal('green'); scheduleNextSignal();}},450);
+    clearInterval(state.clockTimer);
+    state.clockTimer=setInterval(()=>{
+      if(!state.playing) return;
+      state.time--;
+      if(state.time<=10 && state.time>0){ $('time').classList.add('time-warning'); $('gameShell').classList.add('last10'); }
+      if(state.time<=3 && state.time>0){ $('gameShell').classList.add('last3'); }
+      if(state.time<=10 && state.time>0 && state.lastCountdownSound!==state.time){ state.lastCountdownSound=state.time; soundCountdown(state.time); }
+      updateStats();
+      if(state.time<=0) endGame();
+    },1000);
+    setTimeout(()=>$('gameShell').scrollIntoView({behavior:'smooth',block:'center'}),80);
+  }
+
+  function endGame(){
+    if(!state.playing) return;
+    state.playing=false;
+    $('gameShell').classList.remove('last10','last3'); $('time').classList.remove('time-warning');
+    clearInterval(state.clockTimer); clearTimeout(state.signalTimer);
+    $('goBtn').disabled=true; $('goBtn').classList.remove('red-stop','yellow-wait');
+    $('redLamp').classList.remove('on'); $('yellowLamp').classList.remove('on'); $('greenLamp').classList.remove('on');
+    $('signalText').textContent='時間到！'; $('signalText').className='signal-text';
+    setFeedback('完成 60 秒挑戰！','good');
+    saveRank(); showResult(); soundCheer(); confetti();
+  }
+  function showResult(){
+    $('resultName').textContent=`${$('playerName').value.trim()}｜${levelName[state.level]}難度`;
+    $('resultScore').textContent=state.score;
+    $('resultCorrect').textContent=state.correct;
+    $('resultMistakes').textContent=state.mistakes;
+    $('resultMaxCombo').textContent=state.maxCombo;
+    $('resultOverlay').classList.add('show');
+  }
+  function closeResult(){ $('resultOverlay').classList.remove('show'); }
+  function backSettings(){
+    closeResult();
+    $('settings').classList.remove('collapsed'); $('settingsTitle').textContent='遊戲設定';
+    setTimeout(()=>$('settings').scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+  function confetti(){
+    const layer=$('confettiLayer'); layer.innerHTML='';
+    const colors=['#f25f5c','#ffe066','#2ec4b6','#5c7cfa','#ff922b','#8ce99a','#e599f7'];
+    for(let i=0;i<70;i++){
+      const c=document.createElement('i'); c.className='confetti'; c.style.left=Math.random()*100+'vw'; c.style.background=colors[i%colors.length];
+      c.style.animationDelay=(Math.random()*.45)+'s'; c.style.animationDuration=(1.7+Math.random()*.9)+'s';
+      c.style.transform=`rotate(${Math.random()*180}deg)`; layer.appendChild(c);
+    }
+    setTimeout(()=>layer.innerHTML='',3000);
+  }
+
+  function getRanks(){ try{return JSON.parse(localStorage.getItem('furuiRedGreenRanks')||'[]')}catch(e){return[]} }
+  function saveRank(){
+    const ranks=getRanks();
+    ranks.push({name:$('playerName').value.trim(),level:levelName[state.level],score:state.score,correct:state.correct,mistakes:state.mistakes,maxCombo:state.maxCombo,ts:Date.now()});
+    ranks.sort((a,b)=>b.score-a.score || b.correct-a.correct || a.mistakes-b.mistakes || b.maxCombo-a.maxCombo || a.ts-b.ts);
+    localStorage.setItem('furuiRedGreenRanks',JSON.stringify(ranks.slice(0,30)));
+    renderRanks();
+  }
+  function renderRanks(){
+    const body=$('leaderBody'), ranks=getRanks(); body.innerHTML='';
+    if(!ranks.length){ body.innerHTML='<tr><td colspan="7" style="padding:18px;color:#8d8178">尚無紀錄</td></tr>'; return; }
+    ranks.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      [i+1,r.name,r.level,r.score,r.correct,r.mistakes,r.maxCombo].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});
+      body.appendChild(tr);
+    });
+  }
+
+  document.querySelectorAll('.diff-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    if(state.playing) return;
+    document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); state.level=btn.dataset.level;
+  }));
+  $('soundBtn').addEventListener('click',()=>{
+    state.sound=!state.sound; $('soundBtn').textContent=state.sound?'🔊 音效：開':'🔇 音效：關'; if(state.sound) ensureAudio();
+  });
+  $('startBtn').addEventListener('click',startGame);
+  $('goBtn').addEventListener('click',pressGo);
+  $('playAgainBtn').addEventListener('click',startGame);
+  $('backSettingsBtn').addEventListener('click',backSettings);
+  $('clearRankBtn').addEventListener('click',()=>{
+    if(confirm('確定要清除本機排行榜紀錄嗎？')){ localStorage.removeItem('furuiRedGreenRanks'); renderRanks(); }
+  });
+  window.addEventListener('keydown',e=>{
+    if(e.code==='Space' && state.playing){ e.preventDefault(); pressGo(); }
+  },{passive:false});
+  window.addEventListener('beforeunload',()=>{clearInterval(state.clockTimer);clearTimeout(state.signalTimer)});
+  renderRanks(); updateStats();
+})();
+</script>
+</body>
+</html>
