@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>福睿翻翻樂</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=jCU8VJkt7Lxu5Auss9s19KUmuYJfrIDCb5qnMNx5AvOnSH_fEABg4YGxFxBFWc-_bqE1QNpnolcukADHCHkB0X63o7l4ZTDKD8FzbUpylk6G_IhPMth2ZF8HxKjvZYPu1_QN2WEYUi1yqO2sTlVA6FSIMF8erVPrYOUodv6dJvAE2VnvTTBf1gzUbEsXxCdHPJdRFvLc1qR51hh6sHfcuT_1GBCIu3wp3dQ9_fVMrxQu12U8POrr0bzuPf-3irCuProAw_zApco7jbadl5fTUFPIW26hgsFgxq8Tw1abJx2E4ZDC5n5pEy2lS8GntjHDLsIOkvim_jUegG6JbHlF_HZWe82fZUF4k-KRhaeEOL01raOYNwnXvhHRyRf1l5NC4bhZaWh9kTaUotSvv-JlnZBzh6n0xGgHg6Nfx-jBrYpzcA8oTzI6U4Ld0AuO1LTu" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMGE1ZDg4MjA5YWZlNmIwZWM5ZDE2MTZlZSZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTclQkYlQkIlRTclQkYlQkIlRTYlQTglODJfJUU3JUFDJUFDJUU1JTlCJTlCJUU3JTg5JTg4XyVFNyVBRiU4MCVFNiU4QiU4RCVFNSU4QSVBMCVFNSVCQyVCNy5odG1sJmNkPWF0dGFjaG1lbnQmdHM9NDk2Njg2JnA9ZnMmY2lkPTEmc2lnPTI0YjE2YzgyNjQ1ZWNlODA0YjgzMTRmYmZlZDMyMDYwNmYzMGViOTQ5MjE3ZWYwYzc3ZWFmOTE2MWMxZTU4Nzkmdj0w"/><style>
+  :root{
+    --bg:#fff8ee;
+    --panel:#ffffff;
+    --text:#3b332d;
+    --muted:#766a61;
+    --primary:#ef8f46;
+    --primary-dark:#d96f25;
+    --accent:#f6c85f;
+    --green:#70b77e;
+    --red:#d94b4b;
+    --border:#ead9c9;
+    --shadow:0 8px 24px rgba(93,65,43,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#fffaf2,#fff4e5);color:var(--text);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;overflow-x:hidden}
+  body{min-height:100vh}
+  .app{width:min(960px,100%);margin:0 auto;padding:18px 14px 28px}
+  header{text-align:center;margin-bottom:14px}
+  h1{font-size:clamp(30px,6vw,48px);line-height:1.1;margin:6px 0;color:#b95f24;letter-spacing:1px}
+  .subtitle{font-size:clamp(17px,3.6vw,22px);font-weight:800;color:#6a5b4e}
+  .setup,.stats,.leaderboard,.result-card{
+    background:var(--panel);border:2px solid var(--border);border-radius:22px;box-shadow:var(--shadow)
+  }
+  .setup{padding:16px;margin:16px auto;transition:.25s ease;overflow:hidden}
+  .setup.collapsed{max-height:0;padding:0;border-width:0;margin:0;opacity:0;pointer-events:none}
+  .field{margin:12px 0}
+  .label{font-weight:900;font-size:18px;margin-bottom:8px}
+  input[type="text"]{
+    width:100%;font-size:22px;padding:13px 15px;border:2px solid #d8c2ae;border-radius:14px;outline:none;background:#fffdf9
+  }
+  .choices{display:flex;gap:10px;flex-wrap:wrap}
+  .choice{
+    flex:1 1 120px;min-height:54px;border:2px solid #dfc5ad;border-radius:15px;background:#fffaf5;color:#4d4038;
+    font-size:18px;font-weight:900;padding:10px 12px;cursor:pointer
+  }
+  .choice.active{background:#ffe2bf;border-color:var(--primary);color:#9a4b12;box-shadow:0 0 0 3px rgba(239,143,70,.13)}
+
+  .difficulty-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex-wrap:nowrap}
+  .difficulty-row .choice{min-width:0;white-space:nowrap;padding-left:5px;padding-right:5px}
+  .row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  button{font-family:inherit}
+  .main-btn,.secondary-btn,.danger-btn{
+    border:none;border-radius:16px;min-height:56px;padding:12px 18px;font-size:20px;font-weight:900;cursor:pointer
+  }
+  .main-btn{background:var(--primary);color:#fff;flex:1 1 220px;box-shadow:0 6px 0 #c86624}
+  .main-btn:active{transform:translateY(2px);box-shadow:0 4px 0 #c86624}
+  .secondary-btn{background:#f3eadf;color:#5c4e43;flex:1 1 160px}
+  .danger-btn{background:#fbe2df;color:#a23932}
+  .stats{display:none;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;margin:12px auto 10px;max-width:760px}
+  .stats.show{display:grid}
+  .stat{text-align:center;padding:8px 6px;border-radius:14px;background:#fff9f3}
+  .stat .k{font-size:15px;color:var(--muted);font-weight:800}
+  .stat .v{font-size:clamp(25px,5vw,36px);font-weight:1000;color:#8c4d24;line-height:1.15}
+  .stat .v.warning{color:var(--red);animation:pulseText .65s infinite alternate}
+  @keyframes pulseText{from{transform:scale(1)}to{transform:scale(1.08)}}
+
+  .game-wrap{display:none;justify-content:center;align-items:center;min-height:48vh;padding:8px 0 10px}
+  .game-wrap.show{display:flex}
+  .board-shell{
+    width:min(94vw,760px);margin:auto;padding:10px;border-radius:22px;background:#f2d7b8;border:4px solid transparent;box-shadow:var(--shadow)
+  }
+  .board-shell.warning{border-color:var(--red);animation:redFlash .55s infinite alternate}
+  @keyframes redFlash{
+    from{box-shadow:0 0 0 3px rgba(217,75,75,.14),var(--shadow)}
+    to{box-shadow:0 0 0 10px rgba(217,75,75,.36),var(--shadow)}
+  }
+  .board{display:grid;gap:10px;width:100%}
+  .card{
+    border:none;background:transparent;aspect-ratio:1/1;min-width:0;perspective:800px;cursor:pointer;padding:0;touch-action:manipulation
+  }
+  .card-inner{
+    width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .28s ease;border-radius:18px;
+  }
+  .card.flipped .card-inner,.card.matched .card-inner{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:18px;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;user-select:none
+  }
+  .back{
+    background:linear-gradient(145deg,#f39d59,#e77f32);border:3px solid #c96624;color:#fff;
+    box-shadow:inset 0 0 0 4px rgba(255,255,255,.2),0 4px 8px rgba(74,45,22,.18)
+  }
+  .back::after{content:"★";font-size:clamp(34px,9vw,72px);opacity:.95;text-shadow:0 2px 0 rgba(0,0,0,.1)}
+  .front{
+    transform:rotateY(180deg);background:#fffefb;border:3px solid #dfc4a9;
+    font-size:clamp(42px,10vw,82px);box-shadow:inset 0 0 18px rgba(236,204,170,.2)
+  }
+  .card.matched .front{background:#eff9ef;border-color:#81bc86;animation:matchedPop .35s ease}
+  @keyframes matchedPop{50%{transform:rotateY(180deg) scale(1.07)}}
+  .hint{display:none;text-align:center;color:#76695f;font-weight:800;margin-top:8px;font-size:15px}
+  .hint.show{display:block}
+
+  .leaderboard{padding:16px;margin:18px auto 0}
+  .leaderboard h2{font-size:24px;margin:0 0 12px;text-align:center;color:#8b4d27}
+  .table-wrap{overflow-x:auto;border-radius:14px}
+  table{width:100%;border-collapse:collapse;min-width:650px;background:#fff}
+  th,td{padding:10px 8px;border-bottom:1px solid #eadfd5;text-align:center;font-size:15px}
+  th{background:#fff1df;color:#6c4931}
+  .empty{text-align:center;color:#8c8076;padding:18px}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(46,33,23,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:30
+  }
+  .overlay.show{display:flex}
+  .result-card{width:min(520px,95vw);padding:24px;text-align:center;position:relative;z-index:32}
+  .result-card h2{font-size:34px;margin:0 0 10px;color:#b85f24}
+  .result-score{font-size:44px;font-weight:1000;color:#d4762d;margin:8px 0}
+  .result-detail{font-size:20px;font-weight:800;line-height:1.7}
+  .result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:31}
+  .confetti{
+    position:absolute;bottom:-28px;width:10px;height:18px;border-radius:2px;
+    animation:rise linear forwards;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0deg);opacity:1}
+    100%{transform:translateY(-115vh) rotate(720deg);opacity:.1}
+  }
+
+  .top-mini{display:none;justify-content:center;margin:2px 0 6px}
+  .top-mini.show{display:flex}
+  .mini-btn{border:none;background:#f4eadf;color:#6b5748;border-radius:999px;padding:8px 13px;font-weight:900;font-size:14px;cursor:pointer}
+  .sound-state{font-weight:900}
+  .footer-note{text-align:center;color:#8a7a6f;font-size:13px;margin-top:12px}
+
+  @media(max-width:600px){
+    .app{padding:10px 8px 20px}
+    .setup{padding:12px;border-radius:18px}
+    .choice{font-size:16px;min-height:50px;padding:8px;flex-basis:95px}
+    .difficulty-row{gap:5px}
+    .difficulty-row .choice{font-size:14px;padding:7px 3px}
+    .main-btn,.secondary-btn,.danger-btn{font-size:18px;min-height:52px}
+    .stats{padding:8px;gap:6px}
+    .stat .k{font-size:13px}.stat .v{font-size:28px}
+    .board-shell{width:min(98vw,720px);padding:7px;border-radius:18px}
+    .board{gap:7px}
+    .face,.card-inner{border-radius:14px}
+    .front{font-size:clamp(38px,13vw,66px)}
+    .back::after{font-size:clamp(30px,11vw,58px)}
+  }
+  @media(max-width:420px){
+    .board[data-cols="4"],.board[data-cols="5"]{gap:5px}
+    .board-shell{padding:5px}
+    .front{font-size:clamp(32px,12vw,52px)}
+    .back::after{font-size:clamp(28px,10vw,46px)}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header id="pageHeader">
+    <h1>福睿翻翻樂</h1>
+    <div class="subtitle">樂齡記憶力 × 專注力挑戰</div>
+  </header>
+
+  <section class="setup" id="setup">
+    <div class="field">
+      <div class="label">姓名</div>
+      <input id="playerName" type="text" maxlength="12" placeholder="請輸入姓名" />
+    </div>
+
+    <div class="field">
+      <div class="label">主題</div>
+      <div class="choices" id="themeChoices">
+        <button class="choice active" data-theme="水果">🍎 水果</button>
+        <button class="choice" data-theme="動物">🐶 動物</button>
+        <button class="choice" data-theme="交通工具">🚗 交通工具</button>
+        <button class="choice" data-theme="花草">🌸 花草</button>
+        <button class="choice" data-theme="生活用品">🍴 生活用品</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="label">難度</div>
+      <div class="choices difficulty-row" id="difficultyChoices">
+        <button class="choice active" data-diff="易">易 2×2</button>
+        <button class="choice" data-diff="中">中 3×4</button>
+        <button class="choice" data-diff="難">難 4×4</button>
+        <button class="choice" data-diff="終級">終級 4×5</button>
+      </div>
+    </div>
+
+    <div class="row-actions">
+      <button class="main-btn" id="startBtn">開始遊戲</button>
+      <button class="secondary-btn" id="soundBtn">🔊 音效：<span class="sound-state">開</span></button>
+    </div>
+  </section>
+
+  <div class="top-mini" id="topMini">
+    <button class="mini-btn" id="stopBtn">結束本局</button>
+  </div>
+
+  <section class="stats" id="stats">
+    <div class="stat"><div class="k">分數</div><div class="v" id="score">0</div></div>
+    <div class="stat"><div class="k">剩餘時間</div><div class="v" id="time">60</div></div>
+    <div class="stat"><div class="k">成功配對</div><div class="v" id="matches">0</div></div>
+  </section>
+
+  <main class="game-wrap" id="gameWrap">
+    <div style="width:100%">
+      <div class="board-shell" id="boardShell">
+        <div class="board" id="board"></div>
+      </div>
+      <div class="hint" id="hint">一次翻 2 張，相同圖案就配對成功！</div>
+    </div>
+  </main>
+
+  <section class="leaderboard" id="leaderboard">
+    <h2>🏆 排行榜</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>名次</th><th>姓名</th><th>主題</th><th>難度</th><th>分數</th><th>成功配對</th></tr></thead>
+        <tbody id="leaderRows"></tbody>
+      </table>
+    </div>
+    <div class="row-actions">
+      <button class="danger-btn" id="clearRankBtn">清除排行榜紀錄</button>
+    </div>
+  </section>
+  <div class="footer-note">成績儲存在目前瀏覽器中，可離線使用。</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="confetti-layer" id="confettiLayer"></div>
+  <div class="result-card">
+    <h2>🎉 挑戰完成！</h2>
+    <div class="result-score"><span id="finalScore">0</span> 分</div>
+    <div class="result-detail">
+      成功配對：<span id="finalMatches">0</span> 組<br>
+      主題：<span id="finalTheme">水果</span>　難度：<span id="finalDiff">易</span>
+    </div>
+    <div class="result-actions">
+      <button class="main-btn" id="againBtn">再玩一次</button>
+      <button class="secondary-btn" id="backBtn">回設定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const themes = {
+    "水果": ["🍎","🍌","🍊","🍇","🍉","🍓","🍍","🥝","🍐","🍑","🥭","🍒"],
+    "動物": ["🐶","🐱","🐰","🐼","🦁","🐸","🐵","🐷","🐯","🐨","🐔","🐧"],
+    "交通工具": ["🚗","🚌","🚲","🚂","✈️","🚤","🚚","🚕","🚜","🛵","🚑","🚁"],
+    "花草": ["🌸","🌻","🌹","🌷","🌼","🌺","🍀","🌿","🌵","🌴","🌱","🪻"],
+    "生活用品": ["🍴","🪥","🧻","🧴","🪣","🧹","🪑","🛏️","🧸","☂️","🔑","🕰️"]
+  };
+  const difficulties = {
+    "易": {rows:2, cols:2, pairs:2},
+    "中": {rows:3, cols:4, pairs:6},
+    "難": {rows:4, cols:4, pairs:8},
+    "終級": {rows:4, cols:5, pairs:10}
+  };
+
+  let selectedTheme = "水果";
+  let selectedDiff = "易";
+  let score = 0, totalMatches = 0, boardMatches = 0, timeLeft = 60;
+  let firstCard = null, secondCard = null, lockBoard = false, playing = false, timer = null;
+  let soundOn = true, audioCtx = null;
+
+  const $ = id => document.getElementById(id);
+  const setup = $("setup"), stats = $("stats"), board = $("board"), boardShell = $("boardShell");
+  const gameWrap = $("gameWrap"), topMini = $("topMini"), hint = $("hint");
+  const scoreEl = $("score"), timeEl = $("time"), matchesEl = $("matches");
+
+  document.querySelectorAll("#themeChoices .choice").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#themeChoices .choice").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active"); selectedTheme = btn.dataset.theme;
+    });
+  });
+  document.querySelectorAll("#difficultyChoices .choice").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#difficultyChoices .choice").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active"); selectedDiff = btn.dataset.diff;
+    });
+  });
+
+  function getAudio(){
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+  function tone(freq=440, dur=.12, type="sine", gain=.09, when=0){
+    if(!soundOn) return;
+    const ctx = getAudio();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(gain, ctx.currentTime+when);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+when+dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(ctx.currentTime+when); o.stop(ctx.currentTime+when+dur);
+  }
+  function successSound(){ tone(620,.11,"sine",.08,0); tone(820,.16,"sine",.08,.09); }
+  function errorSound(){ tone(190,.16,"square",.055,0); tone(145,.18,"square",.045,.12); }
+  function tickSound(strong=false){
+    tone(strong ? 900 : 650, strong ? .24 : .14, "sine", strong ? .20 : .13, 0);
+    if(strong) tone(450, .16, "triangle", .08, .02);
+  }
+  function cheerSound(){
+    [523,659,784,1046].forEach((f,i)=>tone(f,.28,"sine",.07,i*.1));
+    setTimeout(()=>{ if(soundOn){ tone(1046,.45,"triangle",.06,0); tone(1318,.45,"triangle",.05,.08); } }, 420);
+  }
+
+  $("soundBtn").addEventListener("click", () => {
+    soundOn = !soundOn;
+    $("soundBtn").innerHTML = (soundOn ? '🔊 音效：<span class="sound-state">開</span>' : '🔇 音效：<span class="sound-state">關</span>');
+    if(soundOn) tone(660,.09);
+  });
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function makeBoard(){
+    firstCard = secondCard = null; lockBoard = false; boardMatches = 0;
+    const cfg = difficulties[selectedDiff];
+    const icons = shuffle([...themes[selectedTheme]]).slice(0,cfg.pairs);
+    const deck = shuffle([...icons,...icons].map((icon,idx)=>({icon,id:idx+"-"+Math.random()})));
+    board.innerHTML = "";
+    board.style.gridTemplateColumns = `repeat(${cfg.cols}, minmax(0, 1fr))`;
+    board.dataset.cols = cfg.cols;
+    deck.forEach(item => {
+      const card = document.createElement("button");
+      card.className = "card";
+      card.dataset.icon = item.icon;
+      card.setAttribute("aria-label","翻牌");
+      card.innerHTML = `<div class="card-inner"><div class="face back"></div><div class="face front">${item.icon}</div></div>`;
+      card.addEventListener("click",()=>flipCard(card));
+      board.appendChild(card);
+    });
+  }
+
+  function flipCard(card){
+    if(!playing || lockBoard || card.classList.contains("flipped") || card.classList.contains("matched")) return;
+    card.classList.add("flipped");
+    if(!firstCard){ firstCard = card; return; }
+    secondCard = card; lockBoard = true;
+    if(firstCard.dataset.icon === secondCard.dataset.icon){
+      setTimeout(() => {
+        firstCard.classList.add("matched"); secondCard.classList.add("matched");
+        successSound(); score += 10; totalMatches++; boardMatches++;
+        updateStats();
+        firstCard = secondCard = null; lockBoard = false;
+        if(boardMatches === difficulties[selectedDiff].pairs){
+          setTimeout(() => { if(playing) makeBoard(); }, 500);
+        }
+      }, 260);
+    } else {
+      errorSound();
+      setTimeout(() => {
+        firstCard.classList.remove("flipped"); secondCard.classList.remove("flipped");
+        firstCard = secondCard = null; lockBoard = false;
+      }, 780);
+    }
+  }
+
+  function updateStats(){
+    scoreEl.textContent = score;
+    timeEl.textContent = timeLeft;
+    matchesEl.textContent = totalMatches;
+    timeEl.classList.toggle("warning", timeLeft <= 10);
+    boardShell.classList.toggle("warning", timeLeft <= 10 && playing);
+  }
+
+  function centerGame(){
+    if(!playing) return;
+    gameWrap.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  function startGame(){
+    selectedTheme = document.querySelector("#themeChoices .active").dataset.theme;
+    selectedDiff = document.querySelector("#difficultyChoices .active").dataset.diff;
+    score=0; totalMatches=0; timeLeft=60; playing=true;
+    setup.classList.add("collapsed");
+    stats.classList.add("show"); gameWrap.classList.add("show"); topMini.classList.add("show"); hint.classList.add("show");
+    updateStats(); makeBoard(); clearInterval(timer);
+    setTimeout(centerGame, 120);
+    timer = setInterval(()=>{
+      if(!playing) return;
+      timeLeft--;
+      if(timeLeft <= 10 && timeLeft > 3) tickSound(false);
+      if(timeLeft <= 3 && timeLeft > 0) tickSound(true);
+      updateStats();
+      if(timeLeft <= 0) endGame(true);
+    },1000);
+  }
+
+  function endGame(natural=true){
+    if(!playing) return;
+    playing=false; clearInterval(timer); timer=null;
+    lockBoard=true; timeLeft=Math.max(0,timeLeft); updateStats();
+    boardShell.classList.remove("warning"); timeEl.classList.remove("warning");
+    saveScore();
+    showResult();
+    if(natural) cheerSound();
+  }
+
+  function saveScore(){
+    const name = $("playerName").value.trim() || "玩家";
+    const row={name,theme:selectedTheme,diff:selectedDiff,score,matches:totalMatches,ts:Date.now()};
+    const list = JSON.parse(localStorage.getItem("fureiMemoryLeaderboard")||"[]");
+    list.push(row);
+    list.sort((a,b)=> b.score-a.score || b.matches-a.matches || a.ts-b.ts);
+    localStorage.setItem("fureiMemoryLeaderboard",JSON.stringify(list.slice(0,50)));
+    renderLeaderboard();
+  }
+
+  function showResult(){
+    $("finalScore").textContent=score;
+    $("finalMatches").textContent=totalMatches;
+    $("finalTheme").textContent=selectedTheme;
+    $("finalDiff").textContent=selectedDiff;
+    $("overlay").classList.add("show");
+    confetti();
+  }
+
+  function confetti(){
+    const layer=$("confettiLayer"); layer.innerHTML="";
+    const colors=["#ef8f46","#f6c85f","#70b77e","#6db6d9","#d76fa1","#8c78d8"];
+    for(let i=0;i<70;i++){
+      const c=document.createElement("span");
+      c.className="confetti";
+      c.style.left=(Math.random()*100)+"vw";
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration=(2.4+Math.random()*2.4)+"s";
+      c.style.animationDelay=(Math.random()*.7)+"s";
+      c.style.transform=`rotate(${Math.random()*360}deg)`;
+      layer.appendChild(c);
+    }
+    setTimeout(()=>layer.innerHTML="",5500);
+  }
+
+  function resetToSetup(){
+    $("overlay").classList.remove("show");
+    setup.classList.remove("collapsed");
+    stats.classList.remove("show"); gameWrap.classList.remove("show"); topMini.classList.remove("show"); hint.classList.remove("show");
+    board.innerHTML="";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  $("startBtn").addEventListener("click", startGame);
+  $("stopBtn").addEventListener("click",()=>endGame(false));
+  $("againBtn").addEventListener("click",()=>{
+    $("overlay").classList.remove("show"); startGame();
+  });
+  $("backBtn").addEventListener("click",resetToSetup);
+
+  $("clearRankBtn").addEventListener("click",()=>{
+    if(confirm("確定要清除全部排行榜紀錄嗎？")){
+      localStorage.removeItem("fureiMemoryLeaderboard"); renderLeaderboard();
+    }
+  });
+
+  function renderLeaderboard(){
+    const tbody=$("leaderRows");
+    const list=JSON.parse(localStorage.getItem("fureiMemoryLeaderboard")||"[]");
+    tbody.innerHTML="";
+    if(!list.length){
+      tbody.innerHTML=`<tr><td colspan="6" class="empty">目前還沒有紀錄，快來挑戰第一名！</td></tr>`;
+      return;
+    }
+    list.slice(0,10).forEach((r,i)=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${i+1}</td><td>${escapeHtml(r.name)}</td><td>${r.theme}</td><td>${r.diff}</td><td><strong>${r.score}</strong></td><td>${r.matches}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden && playing){ /* 保持計時規則簡單一致 */ }});
+  renderLeaderboard();
+})();
+</script>
+</body>
+</html>
