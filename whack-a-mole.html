@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>福睿打地鼠</title>
+<style>
+body{font-family:Arial,"Noto Sans TC",sans-serif;background:#fffaf0;margin:0;padding:10px;color:#4b3a2b}
+.game{max-width:520px;margin:auto}
+h1{text-align:center;margin:4px;color:#5f402d}
+.sub{text-align:center;font-size:13px;margin-bottom:8px}
+input,button{font-size:17px;border-radius:9px;border:2px solid #d8c5a1;padding:8px}
+input{width:100%;margin-bottom:6px;box-sizing:border-box}
+.row{display:flex;gap:5px;margin-bottom:5px}
+.row button{flex:1;background:#fffdf7;font-weight:bold}
+button.active{background:#ffe6a0;border-color:#d7a630}
+#start{background:#4f8a5b;color:white;border:0}
+.stats{display:grid;grid-template-columns:1.45fr 1fr 1fr 1fr;gap:5px}
+.stat{text-align:center;background:#fffdf7;border:2px solid #ead8b8;border-radius:10px;padding:5px}
+.stat span{display:block;font-size:12px}
+.stat strong{font-size:26px}
+.score strong{font-size:46px;color:#9b641b}
+#status{margin:6px 0;padding:7px;text-align:center;font-weight:bold;background:#fff3c9;border-radius:9px}
+#board{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:8px;border:4px solid #d7b97c;border-radius:15px;background:#fff6dc}
+.hole{aspect-ratio:1;border-radius:50%;border:4px solid #a77a56;background:#4b3326;font-size:clamp(3rem,14vw,5.5rem);padding:0}
+#board.urgent{border-color:#ef4b16;box-shadow:0 0 20px #ff5a20}
+#ranking{margin-top:10px;background:#fffdf7;border:2px solid #e0c894;border-radius:10px;padding:8px}
+table{width:100%;border-collapse:collapse;text-align:center;font-size:13px}
+th,td{padding:5px;border-bottom:1px solid #eee0c8}
+
+/* 特效 */
+#board{position:relative;overflow:hidden}
+#effects,#confetti{position:absolute;inset:0;pointer-events:none;z-index:10;overflow:hidden}
+.star{position:absolute;font-size:30px;animation:starBurst .72s ease-out forwards}
+@keyframes starBurst{
+  to{transform:translate(var(--x),var(--y)) rotate(300deg) scale(.5);opacity:0}
+}
+.fire{
+  display:none;position:absolute;left:0;right:0;bottom:-7px;
+  justify-content:space-around;z-index:5;pointer-events:none;
+  font-size:54px;line-height:1
+}
+#board.urgent .fire{display:flex}
+#board.urgent{animation:urgentGlow .35s infinite alternate}
+@keyframes urgentGlow{
+  to{box-shadow:inset 0 0 38px rgba(255,65,0,.75),0 0 22px rgba(255,90,0,.65)}
+}
+#time.urgentTime{color:#d72e10;display:inline-block;animation:timeBeat .35s infinite alternate}
+
+/* 遊戲進行時：收起設定，讓畫面集中 */
+.game.playing #name,
+.game.playing .sub,
+.game.playing .row,
+.game.playing #ranking{display:none}
+.game.playing .stats{margin-top:6px;margin-bottom:6px}
+.game.playing #status{margin-top:0}
+@keyframes timeBeat{to{transform:scale(1.18)}}
+.confettiPiece{
+  position:absolute;bottom:-22px;width:10px;height:18px;
+  animation:confettiUp 2.1s ease-out forwards
+}
+@keyframes confettiUp{
+  65%{transform:translate(var(--x),var(--y)) rotate(540deg);opacity:1}
+  100%{transform:translate(var(--x),calc(var(--y)*.72)) rotate(800deg);opacity:0}
+}
+
+
+/* 結束畫面 */
+#resultOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:999;
+  background:rgba(65,50,38,.48);
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  box-sizing:border-box;
+}
+#resultOverlay.show{display:flex}
+.resultBox{
+  width:min(92vw,500px);
+  background:#fffdfa;
+  border:3px solid #d9c7b3;
+  border-radius:28px;
+  padding:28px 24px 24px;
+  box-sizing:border-box;
+  text-align:center;
+  box-shadow:0 10px 28px rgba(60,40,20,.18);
+}
+.resultTitle{
+  font-size:clamp(30px,8vw,46px);
+  font-weight:900;
+  color:#b96324;
+  margin-bottom:18px;
+}
+.resultScore{
+  font-size:clamp(52px,14vw,78px);
+  font-weight:900;
+  color:#d57326;
+  line-height:1;
+  margin-bottom:20px;
+}
+.resultInfo{
+  font-size:clamp(20px,5.5vw,30px);
+  font-weight:800;
+  line-height:1.65;
+  color:#3e342e;
+  margin-bottom:26px;
+}
+.resultButtons{
+  display:grid;
+  gap:12px;
+}
+.resultButtons button{
+  width:100%;
+  min-height:70px;
+  border-radius:22px;
+  font-size:clamp(22px,6vw,30px);
+  font-weight:900;
+  border:0;
+}
+#playAgain{
+  background:#f39545;
+  color:#fff;
+  box-shadow:0 8px 0 #c85f20;
+}
+#backSettings{
+  background:#f2eadf;
+  color:#5b514b;
+}
+
+</style>
+</head>
+<body>
+<div class="game">
+<h1>福睿打地鼠</h1>
+<div class="sub">樂齡反應力 × 專注力挑戰</div>
+<input id="name" placeholder="請輸入參賽者姓名">
+<div class="stats">
+<div class="stat score"><span>分數</span><strong id="score">0</strong></div>
+<div class="stat"><span>時間</span><strong id="time">60</strong></div>
+<div class="stat"><span>答對</span><strong id="correct">0</strong></div>
+<div class="stat"><span>連擊</span><strong id="combo">0</strong></div>
+</div>
+<div class="row">
+<button class="mode active" data-mode="normal">🐹 一般</button>
+<button class="mode" data-mode="bomb">💣 炸彈</button>
+</div>
+<div class="row">
+<button class="level active" data-level="easy">易</button>
+<button class="level" data-level="medium">中</button>
+<button class="level" data-level="hard">難</button>
+<button id="sound">🔊</button>
+<button id="start">開始</button>
+</div>
+<div id="status">請輸入姓名後開始</div>
+<div id="board">
+<div class="fire"><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span></div>
+<div id="effects"></div>
+<div id="confetti"></div>
+<button class="hole"></button><button class="hole"></button><button class="hole"></button>
+<button class="hole"></button><button class="hole"></button><button class="hole"></button>
+<button class="hole"></button><button class="hole"></button><button class="hole"></button>
+</div>
+<div id="ranking"><b>🏆 成績排行榜</b>
+<table><thead><tr><th>姓名</th><th>模式</th><th>難度</th><th>分數</th></tr></thead><tbody id="rank"></tbody></table>
+<button id="clearScores" style="display:block;margin:8px auto 0;padding:7px 14px;background:#fff5f2;color:#8c4037;border:1px solid #cba99f;border-radius:8px;font-size:14px;">清除紀錄</button>
+</div>
+</div>
+<div id="resultOverlay" aria-hidden="true">
+  <div class="resultBox" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="resultTitle" id="resultTitle">🎉 挑戰完成！</div>
+    <div class="resultScore"><span id="finalScore">0</span> 分</div>
+    <div class="resultInfo">
+      <div>答對：<span id="finalCorrect">0</span> 隻</div>
+      <div>模式：<span id="finalMode">一般</span>　難度：<span id="finalLevel">易</span></div>
+    </div>
+    <div class="resultButtons">
+      <button id="playAgain">再玩一次</button>
+      <button id="backSettings">回設定</button>
+    </div>
+  </div>
+</div>
+<script>
+const holes=[...document.querySelectorAll(".hole")];
+const scoreEl=document.querySelector("#score"),timeEl=document.querySelector("#time"),correctEl=document.querySelector("#correct"),comboEl=document.querySelector("#combo"),statusEl=document.querySelector("#status"),board=document.querySelector("#board"),gameEl=document.querySelector(".game");
+const resultOverlay=document.querySelector("#resultOverlay"),finalScoreEl=document.querySelector("#finalScore"),finalCorrectEl=document.querySelector("#finalCorrect"),finalModeEl=document.querySelector("#finalMode"),finalLevelEl=document.querySelector("#finalLevel");
+let mode="normal",level="easy",score=0,combo=0,correct=0,time=60,playing=false,moleTimer,gameTimer,soundOn=true,audio;
+const speed={easy:2200,medium:1600,hard:1100},bombs={easy:.15,medium:.25,hard:.35};
+function ctx(){if(!soundOn)return null;if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();return audio}
+function tone(f,delay=0,d=.1,type="sine",vol=.08){const a=ctx();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,a.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+delay+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+delay);o.stop(a.currentTime+delay+d)}
+function hitSound(){tone(550);tone(800,.05)} function emptySound(){tone(220,0,.08,"triangle")} function bombSound(){tone(100,0,.35,"sawtooth");tone(60,.03,.4,"triangle")} function comboSound(){tone(520);tone(660,.08);tone(780,.16)}
+function tickSound(){
+  tone(700,0,.11,"square",.22);
+  if(time<=3){
+    tone(900,0,.13,"square",.28);
+    tone(620,0,.15,"triangle",.16);
+    tone(1000,.42,.12,"square",.30);
+  }
+}
+function endSound(){tone(262);tone(330,.14);tone(392,.28);tone(523,.42);tone(659,.56,.35)}
+
+function starBurst(h){
+  const effects=document.querySelector("#effects");
+  const br=board.getBoundingClientRect(),hr=h.getBoundingClientRect();
+  const x=hr.left-br.left+hr.width/2-15;
+  const y=hr.top-br.top+hr.height/2-15;
+  for(let i=0;i<8;i++){
+    const s=document.createElement("span");
+    const a=i*Math.PI/4,d=60+Math.random()*25;
+    s.className="star";
+    s.textContent=i%3===0?"✨":"⭐";
+    s.style.left=x+"px";s.style.top=y+"px";
+    s.style.setProperty("--x",Math.cos(a)*d+"px");
+    s.style.setProperty("--y",Math.sin(a)*d+"px");
+    effects.appendChild(s);
+    setTimeout(()=>s.remove(),800);
+  }
+}
+function celebrate(){
+  const c=document.querySelector("#confetti");
+  c.innerHTML="";
+  const colors=["#e65245","#f0b83f","#4f8a5b","#4f78b8","#a55db0"];
+  for(let i=0;i<85;i++){
+    const e=document.createElement("i"),left=i%2===0;
+    e.className="confettiPiece";
+    e.style.left=(left?Math.random()*28:72+Math.random()*28)+"%";
+    e.style.background=colors[i%colors.length];
+    e.style.setProperty("--x",(left?40+Math.random()*160:-40-Math.random()*160)+"px");
+    e.style.setProperty("--y",(-190-Math.random()*250)+"px");
+    e.style.animationDelay=Math.random()*.4+"s";
+    c.appendChild(e);
+    setTimeout(()=>e.remove(),2600);
+  }
+}
+function clearBoard(){holes.forEach(h=>{h.textContent="";h.dataset.item=""})}
+function spawn(){if(!playing)return;clearBoard();const h=holes[Math.floor(Math.random()*9)];let item=mode==="bomb"&&Math.random()<bombs[level]?"bomb":"mole";h.dataset.item=item;h.textContent=item==="bomb"?"💣":"🐹";moleTimer=setTimeout(spawn,speed[level])}
+holes.forEach(h=>h.onclick=()=>{if(!playing)return;if(h.dataset.item==="mole"){score+=5;combo++;correct++;if(combo%5===0){score+=10;comboSound();starBurst(h);statusEl.textContent="⭐ 5連擊！＋10"}else hitSound();scoreEl.textContent=score;correctEl.textContent=correct;comboEl.textContent=combo;h.textContent="👍";h.dataset.item="";clearTimeout(moleTimer);moleTimer=setTimeout(spawn,300)}else if(h.dataset.item==="bomb"){score=Math.max(0,score-5);combo=0;scoreEl.textContent=score;comboEl.textContent=0;h.textContent="💥";h.dataset.item="";bombSound();clearTimeout(moleTimer);moleTimer=setTimeout(spawn,500)}else{combo=0;comboEl.textContent=0;emptySound()}})
+function startGame(){resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");const name=document.querySelector("#name").value.trim();if(!name){statusEl.textContent="請先輸入姓名";return}clearTimeout(moleTimer);clearInterval(gameTimer);score=0;combo=0;correct=0;time=60;playing=true;gameEl.classList.add("playing");scoreEl.textContent=0;correctEl.textContent=0;comboEl.textContent=0;timeEl.textContent=60;board.classList.remove("urgent");timeEl.classList.remove("urgentTime");document.querySelector("#confetti").innerHTML="";document.querySelector("#effects").innerHTML="";statusEl.textContent=name+"，開始！";
+setTimeout(()=>board.scrollIntoView({behavior:"smooth",block:"center",inline:"center"}),80);
+spawn();gameTimer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=10&&time>0){board.classList.add("urgent");timeEl.classList.add("urgentTime");statusEl.textContent="🔥 最後 "+time+" 秒";tickSound()}if(time<=0)finishGame(name)},1000)}
+function finishGame(name){playing=false;gameEl.classList.remove("playing");clearTimeout(moleTimer);clearInterval(gameTimer);clearBoard();board.classList.remove("urgent");timeEl.classList.remove("urgentTime");endSound();celebrate();statusEl.textContent="🎉 "+name+"："+score+" 分";saveScore(name);finalScoreEl.textContent=score;finalCorrectEl.textContent=correct;finalModeEl.textContent=mode==="bomb"?"炸彈":"一般";finalLevelEl.textContent=level==="easy"?"易":level==="medium"?"中":"難";resultOverlay.classList.add("show");resultOverlay.setAttribute("aria-hidden","false")}
+function saveScore(name){let list=[];try{list=JSON.parse(localStorage.getItem("furuiScores")||"[]")}catch(e){}list.push({name,mode,level,score});list.sort((a,b)=>b.score-a.score);list=list.slice(0,10);try{localStorage.setItem("furuiScores",JSON.stringify(list))}catch(e){}showRanking()}
+function showRanking(){let list=[];try{list=JSON.parse(localStorage.getItem("furuiScores")||"[]")}catch(e){}document.querySelector("#rank").innerHTML=list.length?list.map(x=>`<tr><td>${String(x.name).replace(/[<>]/g,"")}</td><td>${x.mode==="bomb"?"炸彈":"一般"}</td><td>${x.level==="easy"?"易":x.level==="medium"?"中":"難"}</td><td><b>${x.score}</b></td></tr>`).join(""):'<tr><td colspan="4">尚無成績</td></tr>'}
+document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));b.classList.add("active")});
+document.querySelectorAll(".level").forEach(b=>b.onclick=()=>{level=b.dataset.level;document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));b.classList.add("active")});
+document.querySelector("#sound").onclick=()=>{soundOn=!soundOn;document.querySelector("#sound").textContent=soundOn?"🔊":"🔇"};
+document.querySelector("#start").onclick=startGame;
+document.querySelector("#clearScores").onclick=()=>{
+  if(confirm("確定要清除全部成績紀錄嗎？")){
+    try{localStorage.removeItem("furuiScores")}catch(e){}
+    showRanking();
+    statusEl.textContent="🗑️ 成績紀錄已清除";
+  }
+};
+
+document.querySelector("#playAgain").onclick=()=>{resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");startGame()};
+document.querySelector("#backSettings").onclick=()=>{resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");gameEl.classList.remove("playing");window.scrollTo({top:0,behavior:"smooth"})};
+
+showRanking();
+</script>
+
+</body>
+</html>
