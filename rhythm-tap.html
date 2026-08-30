@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>福睿節奏拍拍樂</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=cB_SmezapwDUHk7skxcYxPXdk4Ad8yswV318qHlCqev9EOyVcNJfMXuf-fniJoV0TeYl_L-cH9jmLcdWJQ-mC1Lt6ekNKm-mF0NEFT4FaIGOnS7iUS7BzHaHSeeMoMzF0jXDgn7egq2N5x3agPy4iuEKwIYr1cnaPb2DUODLEKV96NOx4qrW6X4XkhDwrrnznLqbBy7ZkSAYm3N9zyuzmGiRpVrD2X0zK9VyWk4fGIpV0kffwBEJLlOL7dwUJ9NlHhYS24jQXRyzyQss1gXVoU5vnIOwAX8NgV_hIFAFl49J2q8mjc7VES9gvXIFFbJglsiat7u5YJXZP30tinSAYNlynAIfxh7dLuojJuHPlNhUQ6EsllyG-O6Xwo0BBkRNNMgQPYhqZ6_aeXZisIgo-M-q1DTNK8SLjSzZ82S-52b4o9P25CzluUepdy7f0h_bZA2yY7U8lVtoc14ZiY86tRKjDa1pb3WLNL6jnW5aVvh8XXRF1_60o4Sph7JP1Wa-" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMDNiYTA4MjJmODYwNjFjZGQ5MTFlZGMwNCZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTclQUYlODAlRTUlQTUlOEYlRTYlOEIlOEQlRTYlOEIlOEQlRTYlQTglODJfJUU3JUFDJUFDJUU1JThEJTgxJUU1JTg1JUFEJUU3JTg5JTg4XyVFNiVBOCU4MiVFOSVCRCVBMSVFNSVBNCVBNyVFOCU4MSVCMiVFNyVBRiU4MCVFNiU4QiU4RC5odG1sJmNkPWF0dGFjaG1lbnQmdHM9NDk2Njg2JnA9ZnMmY2lkPTEmc2lnPTNjNTA3ZjBjNDYzYTY3MjBjMmY1NjcwN2FmMGFmODNlNWMxNGUwZjYyMWExNGQ1ZjJiMjY1MDU0YTc4ODY3Njgmdj0w"/><style>
+  :root{
+    --bg:#fff7ed;
+    --card:#ffffff;
+    --ink:#3b2f2f;
+    --muted:#7a6660;
+    --accent:#ef7d4d;
+    --accent2:#f6b54a;
+    --line:#ead8cf;
+    --shadow:0 10px 28px rgba(86,58,47,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:linear-gradient(180deg,#fff8ef 0%,#fff3e7 100%);color:var(--ink)}
+  body{min-height:100dvh}
+  button,input{font:inherit}
+  button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  .app{width:min(920px,100%);margin:0 auto;padding:18px 14px 28px}
+  header{text-align:center;margin:4px 0 14px}
+  h1{font-size:clamp(30px,6vw,46px);margin:0;font-weight:900;letter-spacing:.04em;color:#b85f39}
+  .subtitle{font-size:clamp(17px,3.4vw,22px);font-weight:800;color:#7b5b4d;margin-top:5px}
+  .panel{background:rgba(255,255,255,.94);border:2px solid #f0ddd2;border-radius:24px;box-shadow:var(--shadow)}
+  .settings{padding:18px}
+  .settings.collapsed{display:none}
+  .row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;margin:10px 0}
+  .label{font-size:20px;font-weight:900}
+  .name-input{width:100%;font-size:20px;padding:13px 14px;border:2px solid #dbc7bd;border-radius:14px;outline:none}
+  .name-input:focus{border-color:#e79269;box-shadow:0 0 0 4px rgba(231,146,105,.15)}
+  .difficulty{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .difficulty button,.toggle,.start-btn,.secondary-btn,.danger-btn{border:0;border-radius:14px;font-weight:900;cursor:pointer}
+  .difficulty button{padding:12px 7px;background:#f8eee8;color:#6b5146;font-size:18px;border:2px solid transparent}
+  .difficulty button.active{background:#f49a70;color:white;border-color:#d96f45;box-shadow:0 5px 0 #c95f39}
+  .toggle{padding:12px 16px;background:#f5ebdf;color:#664d42;font-size:18px}
+  .toggle.on{background:#dff4df;color:#2f6e39}
+  .start-btn{display:block;width:min(420px,100%);margin:18px auto 2px;padding:16px 20px;background:linear-gradient(180deg,#f39a68,#e97945);color:white;font-size:25px;box-shadow:0 6px 0 #c95d34}
+  .start-btn:active,.difficulty button:active,.secondary-btn:active,.danger-btn:active{transform:translateY(2px)}
+  .game-wrap{display:none;margin-top:12px}
+  .game-wrap.active{display:block}
+  .hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+  .hud-item{background:#fff;border:2px solid #ead8cf;border-radius:16px;text-align:center;padding:9px 5px;min-width:0}
+  .hud-label{font-size:14px;color:#765d54;font-weight:800}
+  .hud-value{font-size:clamp(25px,5vw,34px);font-weight:1000;line-height:1.05;margin-top:4px}
+  .hud-value.time.danger{color:#d72020}
+  .game-board{position:relative;background:#fffaf5;border:5px solid #f2c9b4;border-radius:28px;padding:16px;box-shadow:var(--shadow);overflow:hidden;min-height:430px;display:flex;flex-direction:column;justify-content:center;transition:border-color .18s,box-shadow .18s}
+  .game-board.final10{animation:redPulse .9s ease-in-out infinite}
+  @keyframes redPulse{
+    0%,100%{border-color:#d83b34;box-shadow:0 0 0 2px rgba(216,59,52,.20),var(--shadow)}
+    50%{border-color:#ff1f17;box-shadow:0 0 0 10px rgba(216,59,52,.18),var(--shadow)}
+  }
+  .instruction{text-align:center;font-size:clamp(20px,4.6vw,28px);font-weight:1000;margin:0 0 14px;color:#5f463c;min-height:1.6em}
+  .pads.beats-2{grid-template-columns:repeat(2,1fr)}
+  .pads.beats-3{grid-template-columns:repeat(3,1fr)}
+  .pads.beats-3 .pad{min-height:150px}
+  .pads{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(620px,100%);margin:0 auto}
+  .pad{position:relative;height:clamp(120px,22vw,180px);border-radius:28px;border:7px solid rgba(255,255,255,.95);box-shadow:0 8px 0 rgba(80,55,45,.18), inset 0 0 0 4px rgba(0,0,0,.08);font-size:clamp(25px,5vw,38px);font-weight:1000;color:white;text-shadow:0 2px 2px rgba(0,0,0,.25);cursor:pointer;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease}
+  .pad small{display:block;font-size:clamp(16px,3vw,22px);margin-top:5px;font-weight:900}
+  .pad.red{background:#e94b4b}
+  .pad.yellow{background:#e5ad19;color:#4b3b12;text-shadow:none}
+  .pad.green{background:#45a85a}
+  .pad.blue{background:#438fd2}
+  .pad.target{transform:scale(1.075);filter:brightness(1.24) saturate(1.08);z-index:2;animation:targetPulse .55s ease-in-out infinite alternate}
+  .pad.red.target{box-shadow:0 0 0 8px #fff,0 0 0 15px #ff2424,0 8px 0 rgba(80,55,45,.18)}
+  .pad.yellow.target{box-shadow:0 0 0 8px #fff,0 0 0 15px #ffc900,0 8px 0 rgba(80,55,45,.18)}
+  .pad.green.target{box-shadow:0 0 0 8px #fff,0 0 0 15px #22c947,0 8px 0 rgba(80,55,45,.18)}
+  .pad.blue.target{box-shadow:0 0 0 8px #fff,0 0 0 15px #148eff,0 8px 0 rgba(80,55,45,.18)}
+  @keyframes targetPulse{from{transform:scale(1.055)}to{transform:scale(1.095)}}
+  .pad.correct{animation:correctPop .22s ease-out}
+  @keyframes correctPop{50%{transform:scale(.95)}}
+  .pad.wrong{animation:wrongShake .23s linear}
+  @keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  .fixed-feedback{
+    min-height:58px;
+    display:flex; align-items:center; justify-content:center;
+    margin:8px auto 12px;
+    padding:7px 18px;
+    width:min(92%,420px);
+    border-radius:16px;
+    background:#fff;
+    border:3px solid #7b665d;
+    color:#3d302b;
+    font-size:clamp(28px,6vw,40px);
+    font-weight:1000;
+    line-height:1.05;
+    text-align:center;
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+    opacity:0;
+    transition:opacity .12s ease;
+  }
+  .fixed-feedback.show{opacity:1}
+  .fixed-feedback.combo{border-color:#d88718;color:#9b5700}
+
+  .float-zone{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .float-text{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:clamp(28px,6vw,46px);font-weight:1000;color:#d36435;text-shadow:0 3px 0 #fff;animation:floatUp .65s ease-out forwards;white-space:nowrap}
+  .float-text.combo{color:#aa5a00}
+  @keyframes floatUp{0%{opacity:0;transform:translate(-50%,-35%) scale(.85)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-120%) scale(1.08)}}
+  .keyboard-note{text-align:center;color:#7f665b;font-weight:800;font-size:15px;margin-top:14px}
+  .leaderboard{margin-top:16px;padding:16px}
+  .leaderboard h2{margin:0 0 10px;font-size:24px}
+  .table-wrap{overflow:auto;border-radius:14px;border:1px solid #ead8cf}
+  table{width:100%;border-collapse:collapse;background:white;min-width:620px}
+  th,td{padding:10px 8px;text-align:center;border-bottom:1px solid #efe1d9;font-size:15px}
+  th{background:#fff1e7;font-weight:1000}
+  .lb-actions{text-align:right;margin-top:10px}
+  .danger-btn{padding:10px 14px;background:#f2e5e1;color:#8d453c}
+  .modal{position:fixed;inset:0;background:rgba(65,46,38,.48);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal.show{display:flex}
+  .result{width:min(560px,100%);background:#fffaf5;border:4px solid #f0b793;border-radius:28px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.23);text-align:center;position:relative;overflow:hidden}
+  .result h2{font-size:34px;margin:2px 0 6px;color:#bd633d}
+  .result p{font-size:18px;margin:0 0 14px;color:#73594e;font-weight:800}
+  .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+  .result-box{background:#fff;border:2px solid #ead5c9;border-radius:16px;padding:12px 6px}
+  .result-box b{display:block;font-size:30px;color:#4e3a31;margin-top:3px}
+  .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .secondary-btn{padding:14px;background:#f1e4dc;color:#684d41;font-size:20px}
+  .play-again{padding:14px;border:0;border-radius:14px;background:#ed8050;color:#fff;font-size:20px;font-weight:1000;cursor:pointer}
+
+  .precount{
+    position:absolute; inset:0; z-index:12;
+    display:none; align-items:center; justify-content:center; flex-direction:column;
+    background:rgba(255,250,245,.88); border-radius:22px; pointer-events:none;
+  }
+  .precount.show{display:flex}
+  .precount-num{
+    font-size:clamp(84px,22vw,150px); line-height:1; font-weight:1000;
+    color:#c85f37; text-shadow:0 4px 0 #fff;
+  }
+  .precount-text{
+    margin-top:10px; font-size:clamp(20px,4vw,28px); font-weight:1000; color:#654b40;
+  }
+  .precount.beat .precount-num{animation:preBeat .28s ease-out}
+  @keyframes preBeat{0%{transform:scale(.82)}55%{transform:scale(1.10)}100%{transform:scale(1)}}
+
+  .countdown3{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:min(28vw,170px);font-weight:1000;color:#d81616;background:rgba(255,255,255,.55);text-shadow:0 4px 0 #fff;z-index:8;pointer-events:none}
+  .countdown3.show{display:flex}
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .confetti{position:absolute;bottom:-30px;width:12px;height:20px;border-radius:3px;animation:rise 2.2s ease-out forwards}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0);opacity:1}
+    100%{transform:translateY(-115vh) rotate(540deg);opacity:0}
+  }
+  .hidden{display:none!important}
+  @media(max-width:650px){
+    .app{padding:10px 10px 20px}
+    header{margin-bottom:10px}
+    .settings{padding:14px}
+    .row{grid-template-columns:1fr;gap:6px;margin:9px 0}
+    .difficulty{gap:6px}
+    .difficulty button{font-size:16px;padding:11px 4px}
+    .hud{gap:5px}
+    .hud-item{padding:8px 3px;border-radius:13px}
+    .hud-label{font-size:12px}
+    .game-board{min-height:420px;padding:12px 10px}
+    .pads{gap:10px}
+    .pad{height:min(31vw,145px);border-radius:22px;border-width:5px}
+    .keyboard-note{display:none}
+    .result-grid{gap:5px}
+    .result-box{padding:10px 3px}
+    .result-box b{font-size:26px}
+  }
+  @media(max-height:720px) and (orientation:landscape){
+    .app{width:min(1050px,100%)}
+    header h1{font-size:28px}.subtitle{font-size:16px}
+    .game-board{min-height:320px}
+    .pad{height:105px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pad.target,.game-board.final10{animation-duration:1.3s}
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header id="topHeader">
+    <h1>福睿節奏拍拍樂</h1>
+    <div class="subtitle">樂齡節奏感 × 反應力挑戰</div>
+  </header>
+
+  <section class="panel settings" id="settings">
+    <div class="row">
+      <div class="label">姓名</div>
+      <input class="name-input" id="playerName" maxlength="12" placeholder="請輸入姓名" />
+    </div>
+    <div class="row">
+      <div class="label">節拍</div>
+      <div class="difficulty" id="beatMode">
+        <button data-beats="2">二拍</button>
+        <button data-beats="3">三拍</button>
+        <button data-beats="4" class="active">四拍</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">難度</div>
+      <div class="difficulty" id="difficulty">
+        <button data-level="easy" class="active">易</button>
+        <button data-level="normal">中</button>
+        <button data-level="hard">難</button>
+        <button data-level="ultimate">終級</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">音效</div>
+      <div><button class="toggle on" id="soundToggle">🔊 開啟</button></div>
+    </div>
+    <button class="start-btn" id="startBtn">開始遊戲</button>
+  </section>
+
+  <section class="game-wrap" id="gameWrap">
+    <div class="hud">
+      <div class="hud-item"><div class="hud-label">分數</div><div class="hud-value" id="score">0</div></div>
+      <div class="hud-item"><div class="hud-label">剩餘時間</div><div class="hud-value time" id="time">60</div></div>
+      <div class="hud-item"><div class="hud-label">正確次數</div><div class="hud-value" id="correct">0</div></div>
+      <div class="hud-item"><div class="hud-label">連擊</div><div class="hud-value" id="combo">0</div></div>
+    </div>
+
+    <div class="game-board" id="gameBoard">
+      <div class="instruction" id="instruction">先看提示，抓鼓點「咚」下拍！</div>
+      <div class="fixed-feedback" id="fixedFeedback" aria-live="polite"></div>
+      <div class="pads beats-4" id="padsGrid">
+        <button class="pad red" data-index="0" aria-label="紅色，鍵盤1">🔴 紅<small>鍵盤 1</small></button>
+        <button class="pad yellow" data-index="1" aria-label="黃色，鍵盤2">🟡 黃<small>鍵盤 2</small></button>
+        <button class="pad green" data-index="2" aria-label="綠色，鍵盤3">🟢 綠<small>鍵盤 3</small></button>
+        <button class="pad blue" data-index="3" aria-label="藍色，鍵盤4">🔵 藍<small>鍵盤 4</small></button>
+      </div>
+      <div class="float-zone" id="floatZone" style="display:none"></div>
+      <div class="precount" id="precount">
+        <div class="precount-num" id="precountNum">5</div>
+        <div class="precount-text" id="precountText">先聽 4 組節拍｜抓鼓點下拍</div>
+      </div>
+      <div class="countdown3" id="countdown3"></div>
+      <div class="keyboard-note" id="rhythmNote">顏色會先亮起提示，聽到「咚」再拍｜電腦可使用鍵盤依節拍使用 1～4</div>
+    </div>
+  </section>
+
+  <section class="panel leaderboard" id="leaderboard">
+    <h2>🏆 本機排行榜</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>正確</th><th>最高連擊</th></tr></thead>
+        <tbody id="leaderBody"></tbody>
+      </table>
+    </div>
+    <div class="lb-actions"><button class="danger-btn" id="clearBtn">清除排行榜</button></div>
+  </section>
+</div>
+
+<div class="modal" id="resultModal" role="dialog" aria-modal="true">
+  <div class="result">
+    <h2>🎉 挑戰完成！</h2>
+    <p id="resultName">本局成績</p>
+    <div class="result-grid">
+      <div class="result-box">分數<b id="finalScore">0</b></div>
+      <div class="result-box">正確次數<b id="finalCorrect">0</b></div>
+      <div class="result-box">最高連擊<b id="finalCombo">0</b></div>
+    </div>
+    <div class="modal-actions">
+      <button class="secondary-btn" id="backBtn">回設定</button>
+      <button class="play-again" id="againBtn">再玩一次</button>
+    </div>
+  </div>
+</div>
+<div class="confetti-layer" id="confettiLayer"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+
+  const settings = $('#settings');
+  const gameWrap = $('#gameWrap');
+  const gameBoard = $('#gameBoard');
+  const scoreEl = $('#score');
+  const timeEl = $('#time');
+  const correctEl = $('#correct');
+  const comboEl = $('#combo');
+  const instruction = $('#instruction');
+  const pads = $$('.pad');
+  const modal = $('#resultModal');
+  const countdown3 = $('#countdown3');
+
+  const DIFFICULTY = {
+    easy:     { label:'易', bpm:60 },
+    normal:   { label:'中', bpm:72 },
+    hard:     { label:'難', bpm:84 },
+    ultimate: { label:'終級', bpm:96 }
+  };
+
+  let level = 'easy';
+  let beatsPerBar = 4;
+  let soundOn = true;
+  let playing = false;
+  let score = 0, correct = 0, combo = 0, maxCombo = 0;
+  let currentTarget = -1;
+  let beatTimer = null, clockTimer = null;
+  let beatCount = 0, beatStart = 0, beatLength = 1000, judgedThisBeat = false;
+  let cueTimer = null, activeBeatTimer = null, beatActive = false;
+  let preCountTimer = null;
+  let endAt = 0;
+  let lastSecond = 60;
+  let audioCtx = null;
+
+  function audioReady(){
+    if(!soundOn) return null;
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function tone(freq=440, dur=.12, type='sine', gain=.12, delay=0){
+    const ctx = audioReady(); if(!ctx) return;
+    const t = ctx.currentTime + delay;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq,t);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(gain,t+.012);
+    g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t+dur+.03);
+  }
+
+  function noise(dur=.09, gain=.12, highpass=700){
+    const ctx = audioReady(); if(!ctx) return;
+    const len = Math.floor(ctx.sampleRate * dur);
+    const buf = ctx.createBuffer(1,len,ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for(let i=0;i<len;i++) data[i]=(Math.random()*2-1)*(1-i/len);
+    const src=ctx.createBufferSource(), filter=ctx.createBiquadFilter(), g=ctx.createGain();
+    src.buffer=buf; filter.type='highpass'; filter.frequency.value=highpass; g.gain.value=gain;
+    src.connect(filter); filter.connect(g); g.connect(ctx.destination);
+    src.start();
+  }
+
+  function correctSound(i){
+    const freqs=[330,392,494,587];
+    tone(freqs[i],.11,'triangle',.12);
+    noise(.055,.07,900);
+  }
+  function wrongSound(){ tone(145,.12,'sine',.13); tone(110,.09,'triangle',.07,.07); }
+  function comboSound(){ tone(659,.09,'triangle',.09); tone(784,.11,'triangle',.10,.09); tone(988,.14,'triangle',.10,.18); }
+  function finishSound(){
+    tone(523,.12,'triangle',.09);
+    tone(659,.12,'triangle',.09,.12);
+    tone(784,.16,'triangle',.10,.24);
+    tone(1047,.32,'triangle',.12,.40);
+    noise(.8,.045,1000);
+  }
+
+  $$('#difficulty button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#difficulty button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      level = btn.dataset.level;
+    });
+  });
+
+  function applyBeatMode(){
+    const grid=$('#padsGrid');
+    grid.classList.remove('beats-2','beats-3','beats-4');
+    grid.classList.add(`beats-${beatsPerBar}`);
+    pads.forEach((p,i)=>{
+      const visible=i<beatsPerBar;
+      p.style.display=visible?'':'none';
+      p.disabled=!visible;
+    });
+    $('#rhythmNote').textContent=`${beatsPerBar}拍｜目前速度：${DIFFICULTY[level].bpm} BPM｜抓鼓點下拍`;
+  }
+
+  $$('#beatMode button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      $$('#beatMode button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      beatsPerBar=Number(btn.dataset.beats);
+      applyBeatMode();
+    });
+  });
+
+  $('#soundToggle').addEventListener('click', () => {
+    soundOn=!soundOn;
+    $('#soundToggle').classList.toggle('on',soundOn);
+    $('#soundToggle').textContent=soundOn?'🔊 開啟':'🔇 關閉';
+    if(soundOn) audioReady();
+  });
+
+  function updateHUD(){
+    scoreEl.textContent=score;
+    correctEl.textContent=correct;
+    comboEl.textContent=combo;
+  }
+
+  function clearTarget(){
+    pads.forEach(p=>p.classList.remove('target'));
+    currentTarget=-1;
+  }
+
+  function metronomeSound(accent=false){
+    // 樂齡清晰節拍：提高主體音量與中低頻存在感，第 1 拍特別突出。
+    if(accent){
+      tone(125,.16,'sine',.62);
+      tone(250,.09,'triangle',.28);
+      noise(.075,.25,760);
+    }else{
+      tone(190,.11,'sine',.40);
+      tone(380,.045,'triangle',.10);
+      noise(.055,.16,980);
+    }
+  }
+
+  function nextBeat(){
+    if(!playing) return;
+    clearTimeout(beatTimer); clearTimeout(cueTimer); clearTimeout(activeBeatTimer);
+    clearTarget();
+
+    beatLength=60000/DIFFICULTY[level].bpm;
+    beatCount++; judgedThisBeat=false; beatActive=false;
+    const cueLead=Math.max(300,Math.min(500,beatLength*.5));
+    const restBeat=beatCount>4 && Math.random()<.11;
+
+    if(restBeat){
+      currentTarget=-1;
+      instruction.textContent='準備：休息拍';
+    }else{
+      currentTarget=Math.floor(Math.random()*beatsPerBar);
+      pads[currentTarget].classList.add('target');
+      instruction.textContent='準備拍這個…';
+    }
+
+    cueTimer=setTimeout(()=>{
+      if(!playing)return;
+      beatStart=performance.now(); beatActive=true;
+      metronomeSound((beatCount-1)%beatsPerBar===0);
+      if(restBeat){
+        instruction.textContent='休息！不要按';
+        floatText('休息拍');
+      }else instruction.textContent='咚！現在拍！';
+
+      activeBeatTimer=setTimeout(()=>{
+        if(!playing)return;
+        if(currentTarget!==-1 && !judgedThisBeat){
+          combo=0; comboEl.textContent=0;
+        }
+        beatActive=false; clearTarget(); nextBeat();
+      },Math.max(320,beatLength-cueLead));
+    },cueLead);
+  }
+  let feedbackTimer=null;
+  function floatText(text,type=''){
+    const el=$('#fixedFeedback');
+    if(!el) return;
+    clearTimeout(feedbackTimer);
+    el.textContent=text;
+    el.className='fixed-feedback show'+(type==='combo'?' combo':'');
+    feedbackTimer=setTimeout(()=>{
+      el.classList.remove('show','combo');
+    },750);
+  }
+
+  function hit(index){
+    if(!playing)return;
+    const p=pads[index];
+
+    if(!beatActive){
+      combo=0; comboEl.textContent=0;
+      p.classList.remove('wrong'); void p.offsetWidth; p.classList.add('wrong');
+      floatText('太早了'); return;
+    }
+    if(currentTarget===-1){
+      combo=0; comboEl.textContent=0;
+      p.classList.remove('wrong'); void p.offsetWidth; p.classList.add('wrong');
+      floatText('休息拍喔'); return;
+    }
+    if(judgedThisBeat)return;
+
+    if(index===currentTarget){
+      const delta=Math.abs(performance.now()-beatStart);
+      let label='跟上了！';
+      if(delta<=180)label='完美！';
+      else if(delta<=360)label='很好！';
+
+      judgedThisBeat=true;
+      p.classList.remove('correct'); void p.offsetWidth; p.classList.add('correct');
+      score+=5; correct++; combo++; maxCombo=Math.max(maxCombo,combo);
+      let bonus=false;
+      if(combo%5===0){score+=10; bonus=true;}
+      updateHUD();
+      floatText(bonus?`${label} +15 連擊！`:`${label} +5`,bonus?'combo':'');
+      instruction.textContent=label; clearTarget();
+    }else{
+      judgedThisBeat=true; combo=0; comboEl.textContent=0;
+      p.classList.remove('wrong'); void p.offsetWidth; p.classList.add('wrong');
+      floatText('拍錯色了'); clearTarget();
+    }
+  }
+  pads.forEach((p,i)=>p.addEventListener('click',()=>hit(i)));
+  document.addEventListener('keydown',e=>{
+    if(['1','2','3','4'].includes(e.key)){
+      e.preventDefault();
+      hit(Number(e.key)-1);
+    }
+  });
+
+  function clockTick(){
+    if(!playing) return;
+    const remain=Math.max(0,Math.ceil((endAt-Date.now())/1000));
+    timeEl.textContent=remain;
+
+    if(remain<=10){
+      timeEl.classList.add('danger');
+      gameBoard.classList.add('final10');
+    }
+
+    lastSecond=remain;
+
+    if(remain<=0){
+      endGame();
+    }else{
+      clockTimer=setTimeout(clockTick,100);
+    }
+  }
+
+  function startPreCount(){
+    clearTimeout(preCountTimer);
+    clearTimeout(beatTimer);
+    clearTimeout(cueTimer);
+    clearTimeout(activeBeatTimer);
+    clearTarget();
+    beatActive=false;
+
+    const box=$('#precount'), num=$('#precountNum'), txt=$('#precountText');
+    box.classList.add('show');
+
+    const interval=60000/DIFFICULTY[level].bpm;
+    let beat=1;
+    const totalBeats=beatsPerBar*4;
+
+    const pulse=()=>{
+      if(!playing) return;
+
+      const beatInBar=((beat-1)%beatsPerBar)+1;
+      const bar=Math.floor((beat-1)/beatsPerBar)+1;
+      num.textContent=beatInBar;
+      txt.textContent=`${beatsPerBar}拍｜第 ${bar}/4 組｜抓鼓點下拍`;
+
+      box.classList.remove('beat'); void box.offsetWidth; box.classList.add('beat');
+      metronomeSound(beatInBar===1);
+
+      if(beat>=totalBeats){
+        // 四組準備拍結束後直接進入遊戲，不中斷節奏。
+        preCountTimer=setTimeout(()=>{
+          if(!playing) return;
+          box.classList.remove('show');
+
+          // 正式遊戲的第一個顏色先提示；一個 cueLead 後就是第一個「咚」。
+          endAt=Date.now()+60000;
+          lastSecond=60;
+          timeEl.textContent='60';
+          clockTick();
+
+          beatLength=60000/DIFFICULTY[level].bpm;
+          beatCount=1;
+          judgedThisBeat=false;
+          beatActive=false;
+          currentTarget=Math.floor(Math.random()*beatsPerBar);
+          pads[currentTarget].classList.add('target');
+          instruction.textContent='準備拍這個…';
+
+          const cueLead=Math.max(300,Math.min(500,beatLength*.5));
+          cueTimer=setTimeout(()=>{
+            if(!playing)return;
+            beatStart=performance.now();
+            beatActive=true;
+            metronomeSound(true);
+            instruction.textContent='咚！現在拍！';
+
+            activeBeatTimer=setTimeout(()=>{
+              if(!playing)return;
+              if(currentTarget!==-1 && !judgedThisBeat){
+                combo=0; comboEl.textContent=0;
+              }
+              beatActive=false;
+              clearTarget();
+              nextBeat();
+            },Math.max(320,beatLength-cueLead));
+          },cueLead);
+        }, Math.max(80, interval*.35));
+      }else{
+        beat++;
+        preCountTimer=setTimeout(pulse,interval);
+      }
+    };
+    pulse();
+  }
+  function startGame(){
+    $('#fixedFeedback')?.classList.remove('show','combo');
+    audioReady();
+    score=0; correct=0; combo=0; maxCombo=0; currentTarget=-1; beatCount=0;
+    updateHUD();
+    timeEl.textContent='60';
+    timeEl.classList.remove('danger');
+    gameBoard.classList.remove('final10');
+    countdown3.classList.remove('show');
+    settings.classList.add('collapsed');
+    gameWrap.classList.add('active');
+    $('#leaderboard').classList.add('hidden');
+    playing=true;
+    lastSecond=60;
+    instruction.textContent='先看提示，抓鼓點「咚」下拍！';
+    $('#rhythmNote').textContent=`${beatsPerBar}拍｜目前速度：${DIFFICULTY[level].bpm} BPM｜顏色先提示，抓「咚」下拍`;
+
+    requestAnimationFrame(()=>{
+      gameBoard.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(startPreCount,350);
+    });
+  }
+
+  function endGame(){
+    if(!playing) return;
+    playing=false;
+    clearTimeout(beatTimer); clearTimeout(cueTimer); clearTimeout(activeBeatTimer); clearTimeout(preCountTimer); clearTimeout(clockTimer);
+    clearTarget();
+    $('#precount').classList.remove('show');
+    gameBoard.classList.remove('final10');
+    timeEl.classList.add('danger');
+    timeEl.textContent='0';
+    instruction.textContent='挑戰完成！';
+    saveScore();
+    finishSound();
+    confetti();
+    $('#finalScore').textContent=score;
+    $('#finalCorrect').textContent=correct;
+    $('#finalCombo').textContent=maxCombo;
+    const name=$('#playerName').value.trim()||'玩家';
+    $('#resultName').textContent=`${name}｜${beatsPerBar}拍｜${DIFFICULTY[level].label}級`;
+    modal.classList.add('show');
+  }
+
+  function confetti(){
+    const layer=$('#confettiLayer');
+    layer.innerHTML='';
+    const colors=['#e94b4b','#f2b51e','#45a85a','#438fd2','#f28ab2','#9b6bd3'];
+    for(let i=0;i<46;i++){
+      const c=document.createElement('i');
+      c.className='confetti';
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDelay=(Math.random()*.55)+'s';
+      c.style.animationDuration=(1.7+Math.random()*1.1)+'s';
+      c.style.width=(8+Math.random()*9)+'px';
+      c.style.height=(10+Math.random()*16)+'px';
+      layer.appendChild(c);
+    }
+    setTimeout(()=>layer.innerHTML='',3200);
+  }
+
+  function loadScores(){
+    try{return JSON.parse(localStorage.getItem('furui_rhythm_scores')||'[]')}catch(e){return[]}
+  }
+  function saveScore(){
+    const rows=loadScores();
+    rows.push({
+      name:($('#playerName').value.trim()||'玩家').slice(0,12),
+      level:`${beatsPerBar}拍・${DIFFICULTY[level].label}`,
+      score,correct,maxCombo,
+      t:Date.now()
+    });
+    rows.sort((a,b)=>b.score-a.score || b.correct-a.correct || b.maxCombo-a.maxCombo);
+    localStorage.setItem('furui_rhythm_scores',JSON.stringify(rows.slice(0,30)));
+    renderBoard();
+  }
+  function renderBoard(){
+    const rows=loadScores().slice(0,10);
+    const body=$('#leaderBody');
+    body.innerHTML='';
+    if(!rows.length){
+      body.innerHTML='<tr><td colspan="6">還沒有紀錄，來挑戰第一名吧！</td></tr>';
+      return;
+    }
+    rows.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      const safeName=String(r.name).replace(/[<>&"]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]));
+      tr.innerHTML=`<td>${i+1}</td><td>${safeName}</td><td>${r.level}</td><td><b>${r.score}</b></td><td>${r.correct}</td><td>${r.maxCombo}</td>`;
+      body.appendChild(tr);
+    });
+  }
+
+  $('#startBtn').addEventListener('click',startGame);
+  $('#againBtn').addEventListener('click',()=>{
+    modal.classList.remove('show');
+    startGame();
+  });
+  $('#backBtn').addEventListener('click',()=>{
+    modal.classList.remove('show');
+    settings.classList.remove('collapsed');
+    gameWrap.classList.remove('active');
+    $('#leaderboard').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('#clearBtn').addEventListener('click',()=>{
+    if(confirm('確定要清除排行榜紀錄嗎？')){
+      localStorage.removeItem('furui_rhythm_scores');
+      renderBoard();
+    }
+  });
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden && playing){
+      // 避免切到背景後節奏計時混亂；總時間仍照現實時間計算
+      clearTimeout(beatTimer);
+    }else if(!document.hidden && playing){
+      clearTimeout(beatTimer);
+      nextBeat();
+    }
+  });
+
+  applyBeatMode();
+  renderBoard();
+})();
+</script>
+</body>
+</html>
