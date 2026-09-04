@@ -35,12 +35,7 @@ th,td{padding:5px;border-bottom:1px solid #eee0c8}
 @keyframes starBurst{
   to{transform:translate(var(--x),var(--y)) rotate(300deg) scale(.5);opacity:0}
 }
-.fire{
-  display:none;position:absolute;left:0;right:0;bottom:-7px;
-  justify-content:space-around;z-index:5;pointer-events:none;
-  font-size:54px;line-height:1
-}
-#board.urgent .fire{display:flex}
+
 #board.urgent{animation:urgentGlow .35s infinite alternate}
 @keyframes urgentGlow{
   to{box-shadow:inset 0 0 38px rgba(255,65,0,.75),0 0 22px rgba(255,90,0,.65)}
@@ -130,6 +125,10 @@ th,td{padding:5px;border-bottom:1px solid #eee0c8}
   color:#5b514b;
 }
 
+
+/* 遊戲進行中不顯示排行榜，結束後自動恢復 */
+.game.playing #ranking{display:none !important}
+
 </style>
 </head>
 <body>
@@ -156,7 +155,7 @@ th,td{padding:5px;border-bottom:1px solid #eee0c8}
 </div>
 <div id="status">請輸入姓名後開始</div>
 <div id="board">
-<div class="fire"><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span></div>
+
 <div id="effects"></div>
 <div id="confetti"></div>
 <button class="hole"></button><button class="hole"></button><button class="hole"></button>
@@ -237,8 +236,15 @@ function celebrate(){
 function clearBoard(){holes.forEach(h=>{h.textContent="";h.dataset.item=""})}
 function spawn(){if(!playing)return;clearBoard();const h=holes[Math.floor(Math.random()*9)];let item=mode==="bomb"&&Math.random()<bombs[level]?"bomb":"mole";h.dataset.item=item;h.textContent=item==="bomb"?"💣":"🐹";moleTimer=setTimeout(spawn,speed[level])}
 holes.forEach(h=>h.onclick=()=>{if(!playing)return;if(h.dataset.item==="mole"){score+=5;combo++;correct++;if(combo%5===0){score+=10;comboSound();starBurst(h);statusEl.textContent="⭐ 5連擊！＋10"}else hitSound();scoreEl.textContent=score;correctEl.textContent=correct;comboEl.textContent=combo;h.textContent="👍";h.dataset.item="";clearTimeout(moleTimer);moleTimer=setTimeout(spawn,300)}else if(h.dataset.item==="bomb"){score=Math.max(0,score-5);combo=0;scoreEl.textContent=score;comboEl.textContent=0;h.textContent="💥";h.dataset.item="";bombSound();clearTimeout(moleTimer);moleTimer=setTimeout(spawn,500)}else{combo=0;comboEl.textContent=0;emptySound()}})
-function startGame(){resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");const name=document.querySelector("#name").value.trim();if(!name){statusEl.textContent="請先輸入姓名";return}clearTimeout(moleTimer);clearInterval(gameTimer);score=0;combo=0;correct=0;time=60;playing=true;gameEl.classList.add("playing");scoreEl.textContent=0;correctEl.textContent=0;comboEl.textContent=0;timeEl.textContent=60;board.classList.remove("urgent");timeEl.classList.remove("urgentTime");document.querySelector("#confetti").innerHTML="";document.querySelector("#effects").innerHTML="";statusEl.textContent=name+"，開始！";
-setTimeout(()=>board.scrollIntoView({behavior:"smooth",block:"center",inline:"center"}),80);
+function startGame(){resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");const nameInput=document.querySelector("#name");const name=nameInput.value.trim()||"玩家";if(!nameInput.value.trim())nameInput.value="玩家";clearTimeout(moleTimer);clearInterval(gameTimer);score=0;combo=0;correct=0;time=60;playing=true;gameEl.classList.add("playing");scoreEl.textContent=0;correctEl.textContent=0;comboEl.textContent=0;timeEl.textContent=60;board.classList.remove("urgent");timeEl.classList.remove("urgentTime");document.querySelector("#confetti").innerHTML="";document.querySelector("#effects").innerHTML="";statusEl.textContent=name+"，開始！";
+setTimeout(()=>{
+  const stats=document.querySelector(".stats");
+  const top=stats.getBoundingClientRect().top+window.scrollY;
+  const bottom=board.getBoundingClientRect().bottom+window.scrollY;
+  const center=(top+bottom)/2;
+  const target=Math.max(0,center-window.innerHeight/2);
+  window.scrollTo({top:target,behavior:"smooth"});
+},180);
 spawn();gameTimer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=10&&time>0){board.classList.add("urgent");timeEl.classList.add("urgentTime");statusEl.textContent="🔥 最後 "+time+" 秒";tickSound()}if(time<=0)finishGame(name)},1000)}
 function finishGame(name){playing=false;gameEl.classList.remove("playing");clearTimeout(moleTimer);clearInterval(gameTimer);clearBoard();board.classList.remove("urgent");timeEl.classList.remove("urgentTime");endSound();celebrate();statusEl.textContent="🎉 "+name+"："+score+" 分";saveScore(name);finalScoreEl.textContent=score;finalCorrectEl.textContent=correct;finalModeEl.textContent=mode==="bomb"?"炸彈":"一般";finalLevelEl.textContent=level==="easy"?"易":level==="medium"?"中":"難";resultOverlay.classList.add("show");resultOverlay.setAttribute("aria-hidden","false")}
 function saveScore(name){let list=[];try{list=JSON.parse(localStorage.getItem("furuiScores")||"[]")}catch(e){}list.push({name,mode,level,score});list.sort((a,b)=>b.score-a.score);list=list.slice(0,10);try{localStorage.setItem("furuiScores",JSON.stringify(list))}catch(e){}showRanking()}
@@ -259,6 +265,11 @@ document.querySelector("#playAgain").onclick=()=>{resultOverlay.classList.remove
 document.querySelector("#backSettings").onclick=()=>{resultOverlay.classList.remove("show");resultOverlay.setAttribute("aria-hidden","true");gameEl.classList.remove("playing");window.scrollTo({top:0,behavior:"smooth"})};
 
 showRanking();
+
+/* 遊戲頁面停用滑鼠右鍵選單，避免誤觸跳出瀏覽器功能 */
+document.addEventListener("contextmenu",function(e){
+  e.preventDefault();
+});
 </script>
 
 </body>

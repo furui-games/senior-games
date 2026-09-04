@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>福睿數字順順點</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=w5LuR6cRocWJQ3BLy2Ov24rrac-g3v_O32vXCUpM8WbKujHCiVR6NvM7dRqlDuNXBNval5_oQXn6Iibpnx8Hj0vHpj_PdhfCl7lho5S1ryZM-0CpYs4xOuV8b89nQ_Pqd3e9-m6r7ZUZXR5awRyUpjeVT7exLoGVUx6Q4uzfQwlaqU17G91ynV1MIF25Vp8J_zuly4W3HVIk0RG3FO-DPRxboyZFRFFYxVp47V3QGvViNhBvy__NkhK50kQNqX9DDKPmN00NLPvwqvz1knDRQ2aVem0mp6ymGI0ajt35CiqX3hyXN7D2OjviIPnQqSDZgHcQ1CbQpNb-Tnzd3puYb6PEQPV5_6O2sbrE9907G6Mt6XQKN87CDNjM7VQinS2PMcvUgJHV3vUGYK80E5A75A" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMDc0ODg4MWY4YjJjNTlkYmZlZDAzMDMwYyZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTYlOTUlQjglRTUlQUQlOTclRTklQTAlODYlRTklQTAlODYlRTklQkIlOUVfdjEuaHRtbCZjZD1hdHRhY2htZW50JnRzPTQ5NjY4NyZwPWZzJmNpZD0xJnNpZz1jYTNkOWNjZDE0MTA0YTEwZWNhZWYxMzUwMmIxNDg5ZGRlMjhmZDRkODM2NmNiOTY5MWU4MmM3NWNjNzRjNTcwJnY9MA"/><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=pGaZy0EEwmA-9xFU7YH1CywaprWQc0O5qrZ4-Zs4aknjdP-ZGAVp264yLw7qs9QIzj6A_K1fMMTqpxFxTjuzObKgMbvRNuNWXnDAU2ju0BVu5PwWhIpeWuuBj4moDUWo8WRVErFsqnaxc2Sfacizy8vVXNHDc_-cZKM0zCEqyDBftdLCeJpo1UFKR8Rgia_d9v0281jHFPjyWxbGFZOPApsEEwkcWXqYdsN1oiJClsjvD60NP6Pptj-On_-DvR0PUAeWqvxP-H3n30ZkyswvvP7sH1ih77lSZianAtkFrXy2jKtLqXyUFYLcbxtooGw0L42vDRWKFxQ1YzTJaucD7XqnPuRNaGG6y-GkGFK7H3TwycnDqHUaaFTmAkIYIFsj4TCuqtGUNP2LdcMiL686Jw" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMGJlNjg4MjA2YjM1MjcxYTFiNmQyMTMyZSZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTYlOTUlQjglRTUlQUQlOTclRTklQTAlODYlRTklQTAlODYlRTklQkIlOUVfdjIuaHRtbCZjZD1hdHRhY2htZW50JnRzPTQ5NjgxNyZwPWZzJmNpZD0xJnNpZz01MDY5N2RlZjczNjM3NDBmODYyNWJmNmY5Njk5ZDUxMzhmMzI1YzkxNjJjNGU4NGQwNGUyMWY5ZWIzN2E2ZGNjJnY9MA"/><style>
   :root{
     --bg:#fff7eb;
     --panel:#ffffff;
@@ -102,6 +102,28 @@
     from{transform:translateY(0) rotate(0deg);opacity:1}
     to{transform:translateY(-115vh) rotate(720deg);opacity:.25}
   }
+
+  body.game-lock{
+    overflow:hidden;
+    overscroll-behavior:none;
+    height:100vh;
+    width:100%;
+    position:fixed;
+    inset:0;
+  }
+  body.game-lock .app{
+    height:100vh;
+    overflow:hidden;
+  }
+  .finish-leaderboard{
+    max-height:38vh;
+    overflow:auto;
+    margin:4px 0 14px;
+    border-top:1px solid #eee2d8;
+    padding-top:10px;
+  }
+  .finish-leaderboard table{min-width:560px}
+
   .hidden{display:none!important}
   @media(max-width:520px){
     .app{padding:10px 8px 18px}
@@ -155,17 +177,6 @@
         點對 +2 分，完成一盤再 +10 分；點錯不扣分。
       </div>
     </div>
-
-    <div class="card leaderboard">
-      <div class="section-title">🏆 本機排行榜</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>完成盤數</th><th>正確數</th></tr></thead>
-          <tbody id="leaderboardBody"></tbody>
-        </table>
-      </div>
-      <button id="clearBoardBtn" class="danger-btn">清除排行榜紀錄</button>
-    </div>
   </section>
 
   <section id="gameScreen" class="game-wrap">
@@ -203,6 +214,18 @@
       <div class="result-item"><b id="finalCorrect">0</b><span>正確點擊數</span></div>
       <div class="result-item"><b id="finalCombo">0</b><span>最高連擊</span></div>
     </div>
+
+    <div class="finish-leaderboard">
+      <div class="section-title" style="margin-top:6px">🏆 本機排行榜</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>名次</th><th>姓名</th><th>難度</th><th>分數</th><th>完成盤數</th><th>正確數</th></tr></thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+      <button id="clearBoardBtn" class="danger-btn">清除排行榜紀錄</button>
+    </div>
+
     <div class="finish-actions">
       <button id="backBtn" class="secondary-btn">回設定</button>
       <button id="replayBtn" class="start-btn">再玩一次</button>
@@ -213,6 +236,7 @@
 
 <script>
 (() => {
+  document.addEventListener('contextmenu', e => e.preventDefault());
   const DIFFS = {
     easy:   {label:'易', cols:3, rows:2, count:6},
     medium: {label:'中', cols:3, rows:3, count:9},
@@ -243,6 +267,16 @@
   const countdown = $('#countdown');
   const statusMsg = $('#statusMsg');
   const comboLine = $('#comboLine');
+
+  function lockPage(){
+    window.scrollTo(0,0);
+    document.body.classList.add('game-lock');
+  }
+  function unlockPage(){
+    document.body.classList.remove('game-lock');
+    window.scrollTo(0,0);
+  }
+
 
   function ensureAudio(){
     if(!audioCtx){
@@ -385,11 +419,12 @@
   }
 
   async function startSequence(){
+    if(!$('#playerName').value.trim()) $('#playerName').value='玩家';
     ensureAudio();
     resetGame();
     homeScreen.classList.add('hidden');
     gameScreen.classList.add('active');
-    window.scrollTo({top:0,behavior:'auto'});
+    lockPage();
     countdown.classList.add('show');
     for(const n of [3,2,1]){
       countdown.textContent=n;
@@ -425,6 +460,7 @@
     updateHUD();
     board.querySelectorAll('button').forEach(b=>b.disabled=true);
     saveScore();
+    renderLeaderboard();
     $('#finalScore').textContent=score;
     $('#finalBoards').textContent=completedBoards;
     $('#finalCorrect').textContent=correctClicks;
@@ -513,11 +549,16 @@
     $('#finishOverlay').classList.remove('show');
     $('#confettiLayer').classList.remove('show');
     gameScreen.classList.remove('active');
+    unlockPage();
     homeScreen.classList.remove('hidden');
     boardFrame.classList.remove('warning');
     renderLeaderboard();
     window.scrollTo({top:0,behavior:'auto'});
   });
+
+  document.addEventListener('touchmove', e => {
+    if(document.body.classList.contains('game-lock')) e.preventDefault();
+  }, {passive:false});
 
   renderLeaderboard();
 })();

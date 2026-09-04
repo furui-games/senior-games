@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>福睿紅綠燈</title>
-<style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=pI13DFfqg5QKsTbu1_sk9I4OmEiaHagMwlz_0OqVIqot-59x466tA7tD7U_ITRl7DHM3JFuvyWPN0aob69jJm7gl65OKfvYtwizTr29R3HdCm9rEv_hbs-28tUzAttc2hjO8p1m_OZZyKLwIpCgT2jaPkc7TMwtIg1IT6Noy45ERy6iYFLgwczAVK1tgnUKtdIHr9DwL0sY4YS1Z7TuiK8XmfHqxzwJdZ_fPGU5kbxGtBOD7xXLFd7u_Tbm63kc_8aJZrkz8n3BJeFuN5DH4wL28NWuEmVY7w8zXdnCEflDHBTjTqGQWuwwA5H_fdAqtQAr2DcqiVhKJsQFRvXZKtA" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMGMzZGM4MjA5OWYzMTc1MDcxNDdkOTQ3OCZmbj1mdXJ1aV9yZWRfZ3JlZW5fbGlnaHRfdjFfOS5odG1sJmNkPWF0dGFjaG1lbnQmdHM9NDk2ODE3JnA9ZnMmY2lkPTEmc2lnPWRkYTA0MTNlMGYwNWMwY2Q1ZDEwMThhYTgxZTQyZGExYmIyODJjMGM2MjMxYTI1NjZhNDA1ZTY4MGNlMmM1MjAmdj0w"/><style>
   :root{
     --bg:#fff8ec;
     --panel:#ffffff;
@@ -20,6 +20,11 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:linear-gradient(180deg,#fffaf1,#fff4e6);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;min-height:100%}
   body{min-height:100vh;overflow-x:hidden}
+  body.playing-mode{overflow:hidden;height:100vh;touch-action:none}
+  body.playing-mode .game-shell{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,calc(100vw - 24px));margin:0;z-index:50;max-height:calc(100vh - 24px);overflow:hidden}
+  body.playing-mode .game-area{height:min(520px,calc(100vh - 150px))}
+  body.playing-mode .settings{visibility:hidden;position:absolute;pointer-events:none}
+  body.playing-mode .header{display:none}
   button,input{font:inherit}
   .wrap{width:min(980px,100%);margin:auto;padding:18px}
   .header{text-align:center;margin-bottom:14px}
@@ -44,9 +49,7 @@
   .game-shell{margin:16px auto 0;background:rgba(255,255,255,.95);border:4px solid transparent;border-radius:28px;box-shadow:var(--shadow);padding:14px;transition:border-color .2s, box-shadow .2s;max-width:760px}
   .game-shell.last10{animation:warnBorder 1s ease-in-out infinite}
   .flame-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden;border-radius:22px;display:none}
-  .game-shell.last10 .flame-layer{display:block}
   .flame{position:absolute;bottom:-18px;font-size:34px;opacity:.82;animation:flameRise .9s ease-in-out infinite alternate;filter:drop-shadow(0 0 7px rgba(255,91,0,.32))}
-  .game-shell.last3 .flame{font-size:42px;animation-duration:.38s;opacity:.95}
   @keyframes flameRise{from{transform:translateY(10px) scale(.88)}to{transform:translateY(-8px) scale(1.08)}}
   @keyframes warnBorder{0%,100%{border-color:#ffb0b0;box-shadow:0 0 0 0 rgba(229,66,66,.15),var(--shadow)}50%{border-color:var(--red);box-shadow:0 0 0 9px rgba(229,66,66,.12),var(--shadow)}}
   .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
@@ -56,9 +59,9 @@
   .time-warning{color:var(--red)!important;animation:timePulse .55s ease-in-out infinite alternate}
   @keyframes timePulse{to{transform:scale(1.08)}}
   .game-area{height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,#fffefb,#fff9ef)}
-  .traffic-light{width:500px;max-width:90%;background:#32393b;border-radius:42px;padding:20px 24px;display:flex;align-items:center;justify-content:center;gap:18px;border:6px solid #24292b;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18),0 12px 24px rgba(0,0,0,.13);position:relative}
+  .traffic-light{width:500px;cursor:pointer;touch-action:manipulation;user-select:none;max-width:90%;background:#32393b;border-radius:42px;padding:20px 24px;display:flex;align-items:center;justify-content:center;gap:18px;border:6px solid #24292b;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18),0 12px 24px rgba(0,0,0,.13);position:relative}
   .traffic-light:before{content:"";position:absolute;width:70px;height:28px;background:#555d5f;left:50%;top:-28px;transform:translateX(-50%);border-radius:14px 14px 0 0}
-  .lamp{width:132px;height:132px;border-radius:50%;margin:0;flex:0 0 auto;background:#5e6668;border:8px solid #1d2224;box-shadow:inset 0 8px 14px rgba(255,255,255,.1),inset 0 -12px 16px rgba(0,0,0,.32)}
+  .lamp{width:132px;cursor:pointer;height:132px;border-radius:50%;margin:0;flex:0 0 auto;background:#5e6668;border:8px solid #1d2224;box-shadow:inset 0 8px 14px rgba(255,255,255,.1),inset 0 -12px 16px rgba(0,0,0,.32)}
   .lamp.red.on{background:radial-gradient(circle at 35% 30%,#ff8d8d,#ef3e3e 48%,#b81f1f);box-shadow:0 0 28px rgba(229,66,66,.55),inset 0 8px 14px rgba(255,255,255,.22)}
   .lamp.yellow.on{background:radial-gradient(circle at 35% 30%,#fff4a3,#f4c430 48%,#c58b00);box-shadow:0 0 28px rgba(244,196,48,.55),inset 0 8px 14px rgba(255,255,255,.22)}
   .lamp.green.on{background:radial-gradient(circle at 35% 30%,#9cf8b7,#29bf5d 48%,#13813a);box-shadow:0 0 28px rgba(34,180,85,.55),inset 0 8px 14px rgba(255,255,255,.22)}
@@ -133,7 +136,7 @@
   <div class="settings" id="settings">
     <div class="settings-title" id="settingsTitle">遊戲設定</div>
     <div class="settings-body">
-      <div class="form-row"><input id="playerName" class="name" maxlength="12" placeholder="請輸入姓名" /></div>
+      <div class="form-row"><input id="playerName" class="name" maxlength="12" placeholder="請輸入姓名" value="玩家" /></div>
       <div class="form-row">
         <div class="difficulty" id="difficultyGroup">
           <button class="diff-btn active" data-level="easy">易</button>
@@ -159,21 +162,19 @@
     </div>
 
     <div class="game-area shake-target" id="gameArea">
-      <div class="flame-layer" id="flameLayer" aria-hidden="true"></div>
-      <div class="traffic-light" aria-label="紅綠燈">
+      <div class="traffic-light" id="trafficLight" aria-label="紅綠燈（直接點燈號操作）">
         <div class="lamp green" id="greenLamp"></div>
         <div class="lamp yellow" id="yellowLamp"></div>
         <div class="lamp red" id="redLamp"></div>
       </div>
       <div class="signal-text" id="signalText">準備開始</div>
-      <div class="feedback" id="feedback">綠燈按 GO，黃燈等一下，紅燈不要按</div>
-      <button id="goBtn" class="go-btn" disabled>GO！</button>
-      <div class="hint">手機點 GO；電腦也可按空白鍵</div>
+      <div class="feedback" id="feedback">綠燈直接按燈號，黃燈等一下，紅燈不要按</div>
+      <div class="hint">手機／電腦直接點亮起的燈號；電腦也可按空白鍵</div>
       <div class="stars" id="stars"></div>
     </div>
   </div>
 
-  <div class="section" id="leaderSection">
+  <div class="section" id="leaderSection" hidden>
     <h2>本機排行榜</h2>
     <div class="table-wrap">
       <table>
@@ -263,16 +264,15 @@
     $('yellowLamp').classList.toggle('on',type==='yellow');
     $('greenLamp').classList.toggle('on',type==='green');
     const t=$('signalText');
-    $('goBtn').classList.remove('red-stop','yellow-wait');
     if(type==='red'){
-      t.textContent='停！'; t.className='signal-text red'; $('goBtn').classList.add('red-stop');
+      t.textContent='停！'; t.className='signal-text red';
       setFeedback('紅燈要停，不要按','');
     }else if(type==='yellow'){
-      t.textContent='等一下！'; t.className='signal-text yellow'; $('goBtn').classList.add('yellow-wait');
+      t.textContent='等一下！'; t.className='signal-text yellow';
       setFeedback('黃燈緩衝中，按了也不計分','');
     }else{
       t.textContent='按！'; t.className='signal-text green';
-      setFeedback('看到綠燈，快按 GO！','');
+      setFeedback('看到綠燈，快按燈號！','');
     }
   }
   function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
@@ -341,14 +341,16 @@
 
   function startGame(){
     ensureAudio();
-    const name=$('playerName').value.trim();
-    if(!name){ $('playerName').focus(); $('playerName').style.borderColor='#e54242'; setTimeout(()=>$('playerName').style.borderColor='',700); return; }
+    let name=($('playerName').value.trim()||'玩家');
+    if(!name){ name='玩家'; $('playerName').value='玩家'; }
     closeResult();
+    $('leaderSection').hidden=true;
+    document.body.classList.add('playing-mode');
+    window.scrollTo(0,0);
     Object.assign(state,{playing:true,score:0,time:60,correct:0,mistakes:0,combo:0,maxCombo:0,signal:null,greenResponded:false,lastCountdownSound:0});
     updateStats();
-    $('time').classList.remove('time-warning'); $('gameShell').classList.remove('last10','last3'); buildFlames();
+    $('time').classList.remove('time-warning'); $('gameShell').classList.remove('last10','last3');
     $('settings').classList.add('collapsed'); $('settingsTitle').textContent='遊戲進行中';
-    $('goBtn').disabled=false; $('goBtn').classList.remove('red-stop','yellow-wait');
     setFeedback('準備好囉！','');
     $('signalText').textContent='開始！'; $('signalText').className='signal-text green';
     $('redLamp').classList.remove('on'); $('yellowLamp').classList.remove('on'); $('greenLamp').classList.remove('on');
@@ -363,7 +365,6 @@
       updateStats();
       if(state.time<=0) endGame();
     },1000);
-    setTimeout(()=>$('gameShell').scrollIntoView({behavior:'smooth',block:'center'}),80);
   }
 
   function endGame(){
@@ -371,14 +372,14 @@
     state.playing=false;
     $('gameShell').classList.remove('last10','last3'); $('time').classList.remove('time-warning');
     clearInterval(state.clockTimer); clearTimeout(state.signalTimer);
-    $('goBtn').disabled=true; $('goBtn').classList.remove('red-stop','yellow-wait');
     $('redLamp').classList.remove('on'); $('yellowLamp').classList.remove('on'); $('greenLamp').classList.remove('on');
     $('signalText').textContent='時間到！'; $('signalText').className='signal-text';
     setFeedback('完成 60 秒挑戰！','good');
-    saveRank(); showResult(); soundCheer(); confetti();
+    document.body.classList.remove('playing-mode');
+    saveRank(); $('leaderSection').hidden=false; showResult(); soundCheer(); confetti();
   }
   function showResult(){
-    $('resultName').textContent=`${$('playerName').value.trim()}｜${levelName[state.level]}難度`;
+    $('resultName').textContent=`${($('playerName').value.trim()||'玩家')}｜${levelName[state.level]}難度`;
     $('resultScore').textContent=state.score;
     $('resultCorrect').textContent=state.correct;
     $('resultMistakes').textContent=state.mistakes;
@@ -389,7 +390,8 @@
   function backSettings(){
     closeResult();
     $('settings').classList.remove('collapsed'); $('settingsTitle').textContent='遊戲設定';
-    setTimeout(()=>$('settings').scrollIntoView({behavior:'smooth',block:'start'}),50);
+    $('leaderSection').hidden=true;
+    window.scrollTo(0,0);
   }
   function confetti(){
     const layer=$('confettiLayer'); layer.innerHTML='';
@@ -405,7 +407,7 @@
   function getRanks(){ try{return JSON.parse(localStorage.getItem('furuiRedGreenRanks')||'[]')}catch(e){return[]} }
   function saveRank(){
     const ranks=getRanks();
-    ranks.push({name:$('playerName').value.trim(),level:levelName[state.level],score:state.score,correct:state.correct,mistakes:state.mistakes,maxCombo:state.maxCombo,ts:Date.now()});
+    ranks.push({name:($('playerName').value.trim()||'玩家'),level:levelName[state.level],score:state.score,correct:state.correct,mistakes:state.mistakes,maxCombo:state.maxCombo,ts:Date.now()});
     ranks.sort((a,b)=>b.score-a.score || b.correct-a.correct || a.mistakes-b.mistakes || b.maxCombo-a.maxCombo || a.ts-b.ts);
     localStorage.setItem('furuiRedGreenRanks',JSON.stringify(ranks.slice(0,30)));
     renderRanks();
@@ -429,7 +431,7 @@
     state.sound=!state.sound; $('soundBtn').textContent=state.sound?'🔊 音效：開':'🔇 音效：關'; if(state.sound) ensureAudio();
   });
   $('startBtn').addEventListener('click',startGame);
-  $('goBtn').addEventListener('click',pressGo);
+  $('trafficLight').addEventListener('click',pressGo);
   $('playAgainBtn').addEventListener('click',startGame);
   $('backSettingsBtn').addEventListener('click',backSettings);
   $('clearRankBtn').addEventListener('click',()=>{
@@ -438,6 +440,10 @@
   window.addEventListener('keydown',e=>{
     if(e.code==='Space' && state.playing){ e.preventDefault(); pressGo(); }
   },{passive:false});
+
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  window.addEventListener('wheel',e=>{ if(state.playing) e.preventDefault(); },{passive:false});
+  window.addEventListener('touchmove',e=>{ if(state.playing) e.preventDefault(); },{passive:false});
   window.addEventListener('beforeunload',()=>{clearInterval(state.clockTimer);clearTimeout(state.signalTimer)});
   renderRanks(); updateStats();
 })();

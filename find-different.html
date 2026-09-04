@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>福睿找找不一樣</title>
-<style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=_NeK7dBS3-J_PFymw1Is0kcLeVlFv9HF3mBND3PAqADj5GHzSF0D2EvBJHK07kXY3S-w9JTyJgEtE6B8nWbv5eHJe4jAGNAxCgZ9NLsNuygQmNjLYyDupAQdEZ5ZzYbq4BwFXy6WEuJTYUCc6afoPHpJgIjZuV8NafQx2CijHRCP0rvGtHUrc9pXTPlKJO_vs9R0a-BTWujOnMUq6g1xWYL7xpfiP2xPbUf-YyGOtbQfv5QFzXdXWfSR1xOgVmYZf-s-xpXp7tYjKCjo9UGb8E8jNm8XsK_AMpeTESwaKzumHxcnmMgBKK6PgQtLNzkhIG7HI_GcwIQIU2_gRmHxVw" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMDM2NTg4MWZkOTBmOTRlYTJlMDliMGIzYSZmbj1mdXJ1aV9maW5kX2RpZmZlcmVudF92MTIuaHRtbCZjZD1hdHRhY2htZW50JnRzPTQ5NjgxNyZwPWZzJmNpZD0xJnNpZz0yMGI1NzMyNmYyMmJhMGVkNGFiMjQzZWUzNDE0ZDA3N2MyODI0ZTMwOTFmYjFjNzIwZGIzMzY4ZDhlNGYzNzQ0JnY9MA"/><style>
 body{
   font-family:Arial,"Noto Sans TC",sans-serif;
   background:#fffaf0;
@@ -212,6 +212,24 @@ body.playing .stats{
 .finishActions button{min-height:68px;border:0;border-radius:22px;font-size:clamp(21px,5.5vw,28px);font-weight:900}
 #playAgain{background:#f39142;color:white;box-shadow:0 8px 0 #c96720}
 #backSettings{background:#f2eadf;color:#645548}
+
+
+/* 樂齡版：遊戲進行時固定畫面，不允許頁面滑動 */
+body.playing{
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+body.playing h1{
+  display:none;
+}
+
+/* 排行榜：開始前顯示、遊戲中隱藏、結束後與回設定後顯示 */
+.rank{
+  display:block !important;
+}
+body.playing .rank{
+  display:none !important;
+}
 
 </style>
 </head>
@@ -487,13 +505,13 @@ function celebrate(){
 function startGame(){
   document.querySelector("#finishOverlay").classList.remove("show");
   document.querySelector("#finishOverlay").setAttribute("aria-hidden","true");
+  document.body.classList.remove("finished");
+
+  const nameInput=document.querySelector("#name");
+  const name=nameInput.value.trim() || "玩家";
+  if(!nameInput.value.trim())nameInput.value="玩家";
+
   document.body.classList.add("playing");
-  const name=document.querySelector("#name").value.trim();
-
-  if(!name){
-    statusEl.textContent="請先輸入姓名";
-    return}
-
   clearInterval(timer);
 
   score=0;
@@ -510,13 +528,16 @@ function startGame(){
 
   newQuestion();
 
-  // 遊戲開始後，將「分數／時間／答對」與遊戲盤一起納入可視範圍。
-  // 以統計區上方為定位基準，避免只置中遊戲盤而把時間、分數推到畫面外。
+  // 遊戲開始時，只定位一次：將統計區＋遊戲盤整體置中。
   requestAnimationFrame(()=>{
     requestAnimationFrame(()=>{
       const stats=document.querySelector(".stats");
-      const rect=stats.getBoundingClientRect();
-      const target=window.scrollY+rect.top-8;
+      const gridWrap=document.querySelector("#gridWrap");
+      const statsRect=stats.getBoundingClientRect();
+      const gridRect=gridWrap.getBoundingClientRect();
+      const groupTop=window.scrollY+statsRect.top;
+      const groupHeight=gridRect.bottom-statsRect.top;
+      const target=groupTop-(window.innerHeight-groupHeight)/2;
       window.scrollTo({top:Math.max(0,target),behavior:"auto"});
     });
   });
@@ -536,6 +557,7 @@ function startGame(){
 
 function finishGame(name){
   document.body.classList.remove("playing");
+  document.body.classList.add("finished");
   playing=false;
   clearInterval(timer);
   timeEl.classList.remove("urgent");document.querySelector("#gridWrap").classList.remove("urgent");
@@ -638,6 +660,7 @@ document.querySelector("#backSettings").addEventListener("click",()=>{
   overlay.classList.remove("show");
   overlay.setAttribute("aria-hidden","true");
   document.body.classList.remove("playing");
+  document.body.classList.remove("finished");
   window.scrollTo({top:0,behavior:"auto"});
 });
 
@@ -651,6 +674,27 @@ document.querySelector("#clearScores").addEventListener("click",()=>{
     statusEl.textContent="🗑️ 成績紀錄已清除"}
 });
 
+
+// 防止誤觸滑鼠右鍵跳出功能選單
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+// 遊戲進行中固定畫面，不讓頁面被滑動
+document.addEventListener("wheel",e=>{
+  if(playing)e.preventDefault();
+},{passive:false});
+
+document.addEventListener("touchmove",e=>{
+  if(playing)e.preventDefault();
+},{passive:false});
+
+document.addEventListener("keydown",e=>{
+  if(!playing)return;
+  if(["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," "].includes(e.key)){
+    e.preventDefault();
+  }
+});
+
+document.body.classList.remove("finished");
 preview();
 showRanking();
 </script>

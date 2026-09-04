@@ -140,6 +140,8 @@
     background:linear-gradient(#2f2925 0%,#49382f 62%,#5a4435 100%);
     border-radius:16px;
     touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
   }
   .controls{
     display:grid;
@@ -205,9 +207,33 @@
     box-shadow:0 12px 34px rgba(0,0,0,.22);
   }
   #overlay .finish-card .big{color:#c66b2a;font-size:clamp(34px,8vw,50px)}
-  .finish-score{color:#d67629;font-size:clamp(48px,12vw,72px);font-weight:900;margin:14px 0 8px}
+  .finish-player{font-size:clamp(19px,4.5vw,24px);font-weight:800;color:#6b5a4d;margin-top:4px}
+  .finish-score{color:#d67629;font-size:clamp(48px,12vw,72px);font-weight:900;margin:10px 0 12px}
   #overlay .finish-card .small{color:#403832;font-size:clamp(19px,5vw,27px);line-height:1.7;margin-top:6px}
-  .finish-actions{display:grid;gap:10px;margin-top:22px}
+  .finish-stats{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:8px;
+  }
+  .finish-stat{
+    background:#fff7e8;
+    border:2px solid #e3c98d;
+    border-radius:18px;
+    padding:12px 8px;
+  }
+  .finish-stat-label{
+    font-size:clamp(17px,4vw,21px);
+    font-weight:800;
+    color:#6b5a4d;
+    margin-bottom:4px;
+  }
+  .finish-stat-value{
+    font-size:clamp(25px,6vw,34px);
+    font-weight:900;
+    color:#4b3b30;
+  }
+  .finish-actions{display:grid;gap:10px;margin-top:20px}
   .finish-replay{width:100%;background:#f79443;color:#fff;min-height:64px;font-size:25px;box-shadow:0 7px 0 #c86520}
   .finish-back{width:100%;background:#f3ecdf;color:#66584c;min-height:60px;font-size:23px}
   #confetti{
@@ -297,8 +323,19 @@
       <div id="overlay">
         <div class="finish-card">
           <div class="big" id="overlayTitle">準備開始</div>
+          <div class="finish-player" id="finishPlayer" style="display:none"></div>
           <div class="finish-score" id="finishScore" style="display:none"></div>
           <div class="small" id="overlayText">按下「開始遊戲」</div>
+          <div class="finish-stats" id="finishStats" style="display:none">
+            <div class="finish-stat">
+              <div class="finish-stat-label">擊落小蜜蜂</div>
+              <div class="finish-stat-value" id="finishKills">0 隻</div>
+            </div>
+            <div class="finish-stat">
+              <div class="finish-stat-label">挑戰難度</div>
+              <div class="finish-stat-value" id="finishDifficulty">易</div>
+            </div>
+          </div>
           <div class="finish-actions" id="finishActions" style="display:none">
             <button class="finish-replay" id="replayBtn">再玩一次</button>
             <button class="finish-back" id="backBtn">回設定</button>
@@ -307,14 +344,11 @@
       </div>
     </div>
 
-    <div class="controls">
-      <button class="move-btn" id="leftBtn" aria-label="向左">⬅</button>
-      <button class="move-btn" id="rightBtn" aria-label="向右">➡</button>
-    </div>
+
 
   </div>
 
-  <div class="panel rank">
+  <div class="panel rank" id="rankPanel" style="display:none;">
     <h2>🏆 本機排行榜</h2>
     <div style="overflow-x:auto">
       <table>
@@ -346,13 +380,16 @@
   const overlay = document.getElementById('overlay');
   const overlayTitle = document.getElementById('overlayTitle');
   const overlayText = document.getElementById('overlayText');
+  const finishPlayer = document.getElementById('finishPlayer');
   const finishScore = document.getElementById('finishScore');
+  const finishStats = document.getElementById('finishStats');
+  const finishKills = document.getElementById('finishKills');
+  const finishDifficulty = document.getElementById('finishDifficulty');
   const finishActions = document.getElementById('finishActions');
   const replayBtn = document.getElementById('replayBtn');
   const backBtn = document.getElementById('backBtn');
-  const leftBtn = document.getElementById('leftBtn');
-  const rightBtn = document.getElementById('rightBtn');
   const rankBody = document.getElementById('rankBody');
+  const rankPanel = document.getElementById('rankPanel');
   const clearRankBtn = document.getElementById('clearRankBtn');
   const powerBar = document.getElementById('powerBar');
   const powerTimeEl = document.getElementById('powerTime');
@@ -367,6 +404,7 @@
   let gameRunning=false, score=0, kills=0, timeLeft=60;
   let last=0, spawnTimer=0, shotTimer=0, secondTimer=0, raf=0;
   let moveLeft=false, moveRight=false, soundOn=true;
+  let dragging=false;
   let audioCtx=null;
   let enemies=[], bullets=[], blasts=[], stars=[], treasures=[];
   let treasureTimer=0, nextTreasureAt=9000, spreadTime=0;
@@ -675,6 +713,8 @@
   }
 
   function startGame(){
+    if(!playerName.value.trim()) playerName.value='玩家';
+    rankPanel.style.display='none';
     diff=DIFF[selectedDifficulty];
     score=0;kills=0;timeLeft=60;
     scoreEl.textContent='0';
@@ -689,7 +729,9 @@
     spawnTimer=0;shotTimer=0;secondTimer=0;last=0;hitCooldown=0;
     gameRunning=true;
     overlay.classList.remove('show');
+    finishPlayer.style.display='none';
     finishScore.style.display='none';
+    finishStats.style.display='none';
     finishActions.style.display='none';
     startBtn.textContent='↻ 重新開始';
     beep(660,.08,'triangle',.04);
@@ -697,6 +739,7 @@
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{
         const gameRect = shell.getBoundingClientRect();
+        // 遊戲開始時，將遊戲區置於目前螢幕中央。
         const targetY = window.scrollY + gameRect.top + gameRect.height/2 - window.innerHeight/2;
         window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'});
       });
@@ -707,14 +750,21 @@
 
   function endGame(){
     gameRunning=false;
+    dragging=false;
     cancelAnimationFrame(raf);
     overlayTitle.textContent='🎉 挑戰完成！';
+    finishPlayer.textContent=`${playerName.value.trim() || '玩家'} 的本局成績`;
+    finishPlayer.style.display='block';
     finishScore.textContent=`${score} 分`;
     finishScore.style.display='block';
-    overlayText.innerHTML=`擊落小蜜蜂：<b>${kills}</b> 隻<br>難度：<b>${diff.label}</b>`;
+    overlayText.style.display='none';
+    finishKills.textContent=`${kills} 隻`;
+    finishDifficulty.textContent=diff.label;
+    finishStats.style.display='grid';
     finishActions.style.display='grid';
     overlay.classList.add('show');
     saveRank();
+    rankPanel.style.display='block';
     launchConfetti();
     cheer();
   }
@@ -792,8 +842,49 @@
     btn.addEventListener('pointerleave',up);
   }
 
-  setHold(leftBtn,'left');
-  setHold(rightBtn,'right');
+  // 防止誤觸滑鼠右鍵時跳出瀏覽器功能選單
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+
+  // 手機／平板：直接在遊戲區左右拖曳飛機。
+  // 遊戲進行中鎖住頁面捲動，避免操作飛機時整個畫面跟著上下滑。
+  function movePlayerToPointer(e){
+    const rect=canvas.getBoundingClientRect();
+    const scaleX=canvas.width/rect.width;
+    player.x=(e.clientX-rect.left)*scaleX;
+    player.x=Math.max(45,Math.min(canvas.width-45,player.x));
+  }
+
+  canvas.addEventListener('pointerdown',e=>{
+    if(!gameRunning) return;
+    dragging=true;
+    try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+    movePlayerToPointer(e);
+    e.preventDefault();
+  });
+
+  canvas.addEventListener('pointermove',e=>{
+    if(!gameRunning || !dragging) return;
+    movePlayerToPointer(e);
+    e.preventDefault();
+  });
+
+  const stopDrag=e=>{
+    dragging=false;
+    try{ canvas.releasePointerCapture(e.pointerId); }catch(err){}
+    if(gameRunning) e.preventDefault();
+  };
+  canvas.addEventListener('pointerup',stopDrag);
+  canvas.addEventListener('pointercancel',stopDrag);
+
+  // 防止遊戲中滾輪、觸控滑動、方向鍵造成頁面位置改變。
+  window.addEventListener('wheel',e=>{
+    if(gameRunning) e.preventDefault();
+  },{passive:false});
+
+  window.addEventListener('touchmove',e=>{
+    if(gameRunning) e.preventDefault();
+  },{passive:false});
 
   window.addEventListener('keydown',e=>{
     if(e.key==='ArrowLeft'){e.preventDefault();moveLeft=true}
@@ -812,8 +903,11 @@
 
   replayBtn.addEventListener('click',startGame);
   backBtn.addEventListener('click',()=>{
+    rankPanel.style.display='none';
     overlay.classList.remove('show');
+    finishPlayer.style.display='none';
     finishScore.style.display='none';
+    finishStats.style.display='none';
     finishActions.style.display='none';
     document.getElementById('setupPanel').scrollIntoView({behavior:'smooth',block:'center'});
   });

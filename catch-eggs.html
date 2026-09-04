@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>福睿接雞蛋</title>
-<style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=NP4VactLNeNFRasFw7By05GmOx2pd1sI8-pxlyIE_qUxCW3ANuZJ_-SAByl2Zs45rs_plfDem9KtCH3ga3ABQ4eBQQpcOgXshASn4xJs9KYSY9wrgVjsMCB2h6fW1h_Mi6zfndQZYnJKt-nobHHLW-wh7Y4uF5bnHlF2HLz4Qvb4AA6apIuD28Oe-xjdPRdU10u4Xe50drOq95lvMgG619RDa5c9w64_GG4behETqMs-V-b4VydH7hZYfnR5XdH2k6EKxvnKaG002j8bAhTZ7g47NaF6xBsGta0V1eYukyKgViZPzpdZ5PXuSs3XyU-4QYUsVXMiVKn0-nMrDP7rx1kn2cWuDoeUoHzAdKEBdAQ6aMc-dNKIL_Gv6VfI1ZDteCKFboWqaJySXNKD_X941jMtoF-RNlJ0x4c3hRhWcfhzI6RqFl5KotMGt9nMOlMqu3SAXYc3FkByJuqPfpq3uT0nDY4j4bWMhmPhLXMLIqgVfHCgEIabpwAq2ugm3Edx" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jaGF0Z3B0LmNvbS9iYWNrZW5kLWFwaS9lc3R1YXJ5L2NvbnRlbnQ_aWQ9ZmlsZV8wMDAwMDAwMDBkNTg4MjA2OTJhZGM4NjNmMTAyYTU3MiZmbj0lRTclQTYlOEYlRTclOUQlQkYlRTYlOEUlQTUlRTklOUIlOUUlRTglOUIlOEJfJUU3JUFDJUFDJUU1JTg1JUFEJUU3JTg5JTg4XyVFOSU4MSU4QSVFNiU4OCVCMiVFNyU5NSVBQiVFOSU5RCVBMiVFNyVCRCVBRSVFNCVCOCVBRCVFNSU5QiVCQSVFNSVBRSU5QS5odG1sJmNkPWF0dGFjaG1lbnQmdHM9NDk2ODE3JnA9ZnMmY2lkPTEmc2lnPWY5MDMyYjA2Y2ZlNGJlMTFmYTVmMmE1YThlZDMwOTZhODFiYTVlODQ0MGFjOGJjZjFiYjZlODdmMjhkMzdhYTAmdj0w"/><style>
   :root{
     --bg:#fff8ed;
     --card:#ffffff;
@@ -27,6 +27,37 @@
     min-height:100vh;
   }
   button,input{font:inherit}
+  body.game-locked{
+    overflow:hidden;
+    height:100vh;
+    overscroll-behavior:none;
+  }
+  body.game-locked #gameSection{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    width:min(980px,100vw);
+    height:100vh;
+    margin:auto;
+    padding:8px 10px;
+    background:linear-gradient(180deg,#fff4df 0%,#fffaf3 100%);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+  }
+  body.game-locked #gameSection .hud{
+    flex:0 0 auto;
+  }
+  body.game-locked #gameSection .game-shell{
+    flex:0 1 auto;
+  }
+  body.game-locked #gameArea{
+    height:min(72vh,660px);
+  }
+  body.game-locked #gameSection .hint{
+    flex:0 0 auto;
+  }
   button{touch-action:none}
   .wrap{
     width:min(980px,100%);
@@ -184,8 +215,8 @@
   #gameArea{
     position:relative;
     width:100%;
-    height:min(64vh,560px);
-    min-height:420px;
+    height:min(72vh,660px);
+    min-height:500px;
     overflow:hidden;
     background:
       linear-gradient(to bottom,#fff8dd 0%,#fffaf0 77%,#f3dfb9 77%,#f2d9a8 100%);
@@ -229,13 +260,13 @@
   .ground-line{
     position:absolute;
     left:0;right:0;
-    bottom:72px;
+    bottom:56px;
     height:4px;
     background:rgba(154,105,57,.32);
   }
   .basket{
     position:absolute;
-    bottom:20px;
+    bottom:4px;
     left:50%;
     width:118px;
     height:64px;
@@ -350,6 +381,7 @@
     font-weight:700;
   }
 
+  #rankPanel.rank-hidden{display:none;}
   .rank-title{
     font-size:24px;
     font-weight:1000;
@@ -474,7 +506,7 @@
     .hud{gap:5px;min-height:66px}
     .hud-item{border-radius:12px;padding:5px 2px}
     .hud-label{font-size:12px}
-    #gameArea{height:56vh;min-height:390px}
+    #gameArea{height:64vh;min-height:470px}
     .hen{font-size:62px}
     .basket{width:105px;height:58px}
     .basket .handle{width:72px;left:16px}
@@ -485,7 +517,7 @@
   }
 
   @media (max-height:700px) and (min-width:701px){
-    #gameArea{height:470px}
+    #gameArea{height:540px}
   }
 </style>
 </head>
@@ -500,7 +532,7 @@
     <div class="setup-grid">
       <div class="field">
         <label for="playerName">姓名</label>
-        <input id="playerName" maxlength="16" placeholder="請輸入姓名" />
+        <input id="playerName" maxlength="16" placeholder="請輸入姓名" value="玩家" />
       </div>
       <div>
         <div class="difficulty-label">難度</div>
@@ -569,14 +601,10 @@
       </div>
     </div>
 
-    <div class="controls">
-      <button class="move-btn" id="leftBtn" aria-label="向左">⬅️</button>
-      <button class="move-btn" id="rightBtn" aria-label="向右">➡️</button>
-    </div>
-    <div class="hint">手機可按住箭頭持續移動；電腦可用鍵盤 ← →</div>
+    <div class="hint">手機／平板：在遊戲區左右滑動控制籃子；電腦可用鍵盤 ← →</div>
   </section>
 
-  <section class="panel hidden-during-play" id="rankPanel">
+  <section class="panel hidden-during-play rank-hidden" id="rankPanel">
     <h2 class="rank-title">🏅 排行榜</h2>
     <div class="table-wrap">
       <table>
@@ -622,8 +650,6 @@
   const hero = document.getElementById('hero');
   const setupPanel = document.getElementById('setupPanel');
   const rankPanel = document.getElementById('rankPanel');
-  const leftBtn = document.getElementById('leftBtn');
-  const rightBtn = document.getElementById('rightBtn');
   const finalScore = document.getElementById('finalScore');
   const finalCaught = document.getElementById('finalCaught');
   const finalCombo = document.getElementById('finalCombo');
@@ -648,6 +674,15 @@
   let soundOn = true;
   let audioCtx = null;
   let msgTimer = null;
+  let touchDragging = false;
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('wheel', e=>{
+    if(running) e.preventDefault();
+  }, {passive:false});
+  document.addEventListener('touchmove', e=>{
+    if(running) e.preventDefault();
+  }, {passive:false});
 
   function ensureAudio(){
     if(!soundOn) return null;
@@ -789,7 +824,7 @@
       }
       if(combo>0 && combo%5===0){
         score+=10;
-        showMsg('🔥 Combo '+combo+'！+10');
+        showMsg('連擊 '+combo+'！+10');
         soundCombo();
       }
     }
@@ -803,7 +838,7 @@
       updateHud();
       soundMiss();
     }
-    crackAt(d.x,gameArea.clientHeight-73,d.type);
+    crackAt(d.x,gameArea.clientHeight-57,d.type);
     removeDrop(d);
   }
 
@@ -849,7 +884,7 @@
         handleCatch(d);
         continue;
       }
-      if(d.y > gameArea.clientHeight-82){
+      if(d.y > gameArea.clientHeight-66){
         handleMiss(d);
       }
     }
@@ -870,17 +905,17 @@
     hero.classList.add('playing');
     setupPanel.classList.add('playing');
     rankPanel.classList.add('playing');
+    rankPanel.classList.add('rank-hidden');
 
     running=true;
+    document.body.classList.add('game-locked');
     setBasketCenter();
     lastFrame=0;
     gameStartTime=performance.now();
     timerLastSecond=-1;
     nextSpawn=gameStartTime+650;
 
-    setTimeout(()=>{
-      document.getElementById('gameSection').scrollIntoView({behavior:'smooth',block:'center'});
-    },70);
+    window.scrollTo(0,0);
 
     cancelAnimationFrame(animationId);
     animationId=requestAnimationFrame(frame);
@@ -889,9 +924,8 @@
   function endGame(){
     if(!running)return;
     running=false;
+    document.body.classList.remove('game-locked');
     moveDir=0;
-    leftBtn.classList.remove('hold');
-    rightBtn.classList.remove('hold');
     cancelAnimationFrame(animationId);
     drops.forEach(d=>d.el.remove());
     drops=[];
@@ -902,6 +936,7 @@
     const name=(playerName.value.trim() || '玩家').slice(0,16);
     saveRank({name,diff:CONFIG[diff].label,score,caught,combo:bestCombo,date:Date.now()});
     renderRank();
+    rankPanel.classList.remove('rank-hidden');
 
     finalScore.textContent=score;
     finalCaught.textContent=caught;
@@ -934,6 +969,7 @@
 
   backBtn.addEventListener('click',()=>{
     finishOverlay.classList.remove('show');
+    document.body.classList.remove('game-locked');
     hero.classList.remove('playing');
     setupPanel.classList.remove('playing');
     rankPanel.classList.remove('playing');
@@ -948,35 +984,45 @@
 
   startBtn.addEventListener('click',startGame);
 
-  function holdButton(btn,dir){
-    const on=e=>{
-      e.preventDefault();
-      if(!running)return;
-      moveDir=dir; btn.classList.add('hold');
-    };
-    const off=e=>{
-      if(e)e.preventDefault();
-      if(moveDir===dir)moveDir=0;
-      btn.classList.remove('hold');
-    };
-    btn.addEventListener('pointerdown',on);
-    btn.addEventListener('pointerup',off);
-    btn.addEventListener('pointercancel',off);
-    btn.addEventListener('pointerleave',off);
+  function moveBasketToClientX(clientX){
+    if(!running) return;
+    const rect=gameArea.getBoundingClientRect();
+    basketX=clientX-rect.left;
+    paintBasket();
   }
-  holdButton(leftBtn,-1);
-  holdButton(rightBtn,1);
+
+  gameArea.addEventListener('pointerdown', e=>{
+    if(!running) return;
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    touchDragging=true;
+    moveBasketToClientX(e.clientX);
+    try{gameArea.setPointerCapture(e.pointerId);}catch{}
+    e.preventDefault();
+  });
+
+  gameArea.addEventListener('pointermove', e=>{
+    if(!running || !touchDragging) return;
+    moveBasketToClientX(e.clientX);
+    e.preventDefault();
+  });
+
+  const stopDrag=e=>{
+    touchDragging=false;
+    try{gameArea.releasePointerCapture(e.pointerId);}catch{}
+  };
+  gameArea.addEventListener('pointerup',stopDrag);
+  gameArea.addEventListener('pointercancel',stopDrag);
 
   window.addEventListener('keydown',e=>{
     if(!running)return;
-    if(e.key==='ArrowLeft'){e.preventDefault();moveDir=-1;leftBtn.classList.add('hold');}
-    if(e.key==='ArrowRight'){e.preventDefault();moveDir=1;rightBtn.classList.add('hold');}
+    if(e.key==='ArrowLeft'){e.preventDefault();moveDir=-1;}
+    if(e.key==='ArrowRight'){e.preventDefault();moveDir=1;}
   });
   window.addEventListener('keyup',e=>{
-    if(e.key==='ArrowLeft' && moveDir===-1){moveDir=0;leftBtn.classList.remove('hold');}
-    if(e.key==='ArrowRight' && moveDir===1){moveDir=0;rightBtn.classList.remove('hold');}
+    if(e.key==='ArrowLeft' && moveDir===-1){moveDir=0;}
+    if(e.key==='ArrowRight' && moveDir===1){moveDir=0;}
   });
-  window.addEventListener('blur',()=>{moveDir=0;leftBtn.classList.remove('hold');rightBtn.classList.remove('hold');});
+  window.addEventListener('blur',()=>{moveDir=0;touchDragging=false;});
   window.addEventListener('resize',()=>{ if(!running)setBasketCenter(); else paintBasket(); });
 
   function getRank(){
